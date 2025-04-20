@@ -1,50 +1,56 @@
 using UnityEngine;
 
-public class TapPulse : MonoBehaviour
+public class OnTapPulse: MonoBehaviour
 {
-    [SerializeField] private float maxPulseWidth = 0.5f;
-    [SerializeField] private float pulseDuration = 1.5f;
-    [SerializeField] private float pulseSoftness = 0.1f;
+    public float pulseDuration = 0.5f;
 
-    private Material _material;
-    private Coroutine _pulseRoutine;
+    private Material mat;
+    private Coroutine pulseRoutine;
 
-    private void Start()
+    void Start()
     {
-        _material = GetComponent<SpriteRenderer>().material;
-        _material.SetFloat("_PulseWidth", 0f);
-        _material.SetFloat("_PulseSoftness", pulseSoftness);
+        mat = GetComponent<SpriteRenderer>().material;
+        mat.SetFloat("_PulseProgress", 0f);
     }
 
-    private void OnMouseDown()
+    void OnMouseDown()
     {
-        Vector3 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 localPoint = transform.InverseTransformPoint(worldPoint);
-        Vector2 spriteSize = GetComponent<SpriteRenderer>().bounds.size;
-        Vector2 uv = new Vector2((localPoint.x / spriteSize.x) + 0.5f, (localPoint.y / spriteSize.y) + 0.5f);
+        //Vector3 worldClick = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //Vector2 localClick = transform.InverseTransformPoint(worldClick);
+        //SpriteRenderer sr = GetComponent<SpriteRenderer>();
 
-        Debug.Log("clicked Pulsed bit");
+        //Debug.Log("click on SG");
 
-        _material.SetVector("_PulseCenter", new Vector4(uv.x, uv.y, 0, 0));
+        //float uvX = (localClick.x / sr.sprite.bounds.size.x) + 0.5f;
+        //float uvY = (localClick.y / sr.sprite.bounds.size.y) + 0.5f;
 
-        if (_pulseRoutine != null)
-            StopCoroutine(_pulseRoutine);
+        //mat.SetVector("_TapPoint", new Vector4(uvX, uvY, 0, 0));
 
-        _pulseRoutine = StartCoroutine(Pulse());
+        // mat.SetFloat("_PulseProgress", 0.8f);
+
+        Debug.Log("clicked on slice");
+        mat.SetVector("_TapPoint", new Vector4(0.5f, 0.5f, 0, 0));
+
+
+
+        //if (pulseRoutine != null) StopCoroutine(pulseRoutine);
+        pulseRoutine = StartCoroutine(AnimatePulse());
     }
 
-    private System.Collections.IEnumerator Pulse()
+    System.Collections.IEnumerator AnimatePulse()
     {
         float t = 0f;
+
+
         while (t < pulseDuration)
         {
+          
             float progress = t / pulseDuration;
-            float pulseValue = Mathf.Sin(progress * Mathf.PI); // rise and fall
-            _material.SetFloat("_PulseWidth", pulseValue * maxPulseWidth);
+            Debug.Log(progress);
+            mat.SetFloat("_PulseProgress", progress);
             t += Time.deltaTime;
             yield return null;
         }
-
-        _material.SetFloat("_PulseWidth", 0f);
+        mat.SetFloat("_PulseProgress", 0f);
     }
 }
