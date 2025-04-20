@@ -46,8 +46,8 @@ public class OnTapPulse: MonoBehaviour
         {
           
             float progress = t / pulseDuration;
-            Debug.Log(progress);
-            mat.SetFloat("_PulseProgress", progress);
+          
+            mat.SetFloat("_PulseProgress", 1.5f* progress);
             t += Time.deltaTime;
             yield return null;
         }
