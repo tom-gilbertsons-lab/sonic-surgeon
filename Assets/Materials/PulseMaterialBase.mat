@@ -75,6 +75,7 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Colour: {r: 1, g: 0.47272673, b: 0, a: 1}
     - _EndColour: {r: 1, g: 1, b: 0, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _StartColour: {r: 1, g: 0, b: 0, a: 1}

@@ -15,21 +15,21 @@ public class OnTapPulse: MonoBehaviour
 
     void OnMouseDown()
     {
-        //Vector3 worldClick = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //Vector2 localClick = transform.InverseTransformPoint(worldClick);
-        //SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        Vector3 worldClick = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 localClick = transform.InverseTransformPoint(worldClick);
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
 
-        //Debug.Log("click on SG");
+        Debug.Log("click on SG");
 
-        //float uvX = (localClick.x / sr.sprite.bounds.size.x) + 0.5f;
-        //float uvY = (localClick.y / sr.sprite.bounds.size.y) + 0.5f;
+        float uvX = (localClick.x / sr.sprite.bounds.size.x) + 0.5f;
+        float uvY = (localClick.y / sr.sprite.bounds.size.y) + 0.5f;
 
-        //mat.SetVector("_TapPoint", new Vector4(uvX, uvY, 0, 0));
+        mat.SetVector("_TapPoint", new Vector4(uvX, uvY, 0, 0));
 
         // mat.SetFloat("_PulseProgress", 0.8f);
 
         Debug.Log("clicked on slice");
-        mat.SetVector("_TapPoint", new Vector4(0.5f, 0.5f, 0, 0));
+        //mat.SetVector("_TapPoint", new Vector4(0.5f, 0.5f, 0, 0));
 
 
 
