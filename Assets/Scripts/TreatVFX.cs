@@ -1,50 +1,26 @@
 using UnityEngine;
+using System.Collections;
 
 public class TreatVFX : MonoBehaviour
-{
-    public float pulseDuration = 1.3f;
-
+{ 
+    // the visualFX for a hotspot tap using the TreatShaderGraph
     private Material mat;
-    private Coroutine pulseRoutine;
 
-    void Start()
+    void Awake()
     {
         mat = GetComponent<SpriteRenderer>().material;
         mat.SetFloat("_PulseProgress", 0f);
     }
 
-    public void CalledFrom()
-    {
-        Debug.Log("Called from TreatModeMaanger");
-    }
 
-    void OnMouseDown()
-    {
-        Vector3 worldClick = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 localClick = transform.InverseTransformPoint(worldClick);
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-
-        Debug.Log("click on transparent");
-
-        float uvX = (localClick.x / sr.sprite.bounds.size.x) + 0.5f;
-        float uvY = (localClick.y / sr.sprite.bounds.size.y) + 0.5f;
-
-        mat.SetVector("_TapPoint", new Vector4(uvX, uvY, 0, 0));
-
-        // mat.SetFloat("_PulseProgress", 0.8f);
-
-        //mat.SetVector("_TapPoint", new Vector4(0.5f, 0.5f, 0, 0));
-
-
-
-        //if (pulseRoutine != null) StopCoroutine(pulseRoutine);
-        pulseRoutine = StartCoroutine(AnimatePulse());
-    }
-
-    System.Collections.IEnumerator AnimatePulse()
+    public IEnumerator AnimateHotSpot(float xPos, float yPos, float pulseDuration, float maxRadius)
     {
         float t = 0f;
 
+
+        mat.SetFloat("_MaxRadius", maxRadius);
+        mat.SetFloat("_PulseProgress", 0f);
+        mat.SetVector("_TapPoint", new Vector4(xPos, yPos, 0, 0));
 
         while (t < pulseDuration)
         {
@@ -58,3 +34,4 @@ public class TreatVFX : MonoBehaviour
         mat.SetFloat("_HeatProgress", 0f);
     }
 }
+
