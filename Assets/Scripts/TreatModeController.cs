@@ -4,36 +4,52 @@ using System.Collections.Generic;
 public class TreatModeManager : MonoBehaviour
 {
 
-    //Treat Mode Play
+    [Header("Target Settings")]
+    public GameObject target;
+    public float delayBeforeFade = 0.7f;
+    public float fadeDuration = 0.5f;
 
-
-    [Header("Target Colour Settings")]
     public Color[] doseColours = new Color[] {
         new Color(1f, 0f, 0f, 0.4f),  
         new Color(1f, 0.5f, 0f, 0.6f),
         new Color(0f, 1f, 0f, 1f)     
     };
-
-    [Header("Target Settings")]
-    public GameObject target;
-    public float delayBeforeFade = 1.0f;
-    public float fadeDuration = 1.0f;
+   
 
     [Header("VFX Settings")]
-    public float hotspotRadius = 1.0f;
+    public float hotspotRadius = 0.5f;
     public GameObject vFXPrefab;
     public Transform vFXParent;
-    public float vFXDuration = 1.3f;
+    public float vFXDuration = 1.0f;
     private List<GameObject> activeVFX = new List<GameObject>();
 
 
+
     private Vector3 worldClick;
-   
+    
+    private int totalSubNuclei = 0;
+    private int treatedSubNuclei = 0;
+    private int dosesDelivered = 0;
+
+    // to pass to gameManager 
+    public float proportionTreated = 0f;
+    public bool treatmentComplete = false;
+
+
+    private void Awake()
+    {
+        // counting the sub nuclei 
+        foreach (Transform child in target.transform)
+        {
+            totalSubNuclei++;
+        }
+    }
+
 
 
     private void OnMouseDown()
     {
-        Debug.Log("Clicked Collider");
+        // onClick make hotspot and check if we are near target 
 
         worldClick = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -45,22 +61,41 @@ public class TreatModeManager : MonoBehaviour
 
     private void TargetOverlap()
     {
+
         foreach (Transform child in target.transform)
         {
-            VimSubColourCycle vimSub = child.GetComponent<VimSubColourCycle>();
-            if (vimSub == null || vimSub.IsMaxed()) continue;
+
+            VimDose vimSub = child.GetComponent<VimDose>();
+            if (vimSub == null || vimSub.IsMaxed())
+                continue;
 
             float targetRadius = vimSub.sr.bounds.extents.magnitude;
             float distance = Vector2.Distance(worldClick, child.position);
 
             if (distance <= targetRadius + hotspotRadius)
             {
-                Debug.Log("Click overlapped " + child.name);
+                
                 vimSub.AccumulateDose();
+                dosesDelivered++;
+                proportionTreated = dosesDelivered / (3 * totalSubNuclei);
+                Debug.Log("Total Doses Possible " + proportionTreated.ToString());
+                if (vimSub.IsMaxed())
+                {
+                    treatedSubNuclei++;
+                }
             }
         }
+
+        if (treatedSubNuclei == totalSubNuclei)
+        {
+            treatmentComplete = true;
+
+       
+        }
+
     }
 
+  
 
     private void SpawnVFX()
     {

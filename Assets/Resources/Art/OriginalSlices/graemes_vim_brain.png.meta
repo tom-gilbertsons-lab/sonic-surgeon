@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      graemes_vim_brain_0: 4651981332249573213
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

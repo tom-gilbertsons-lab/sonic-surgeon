@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5338345378322278516
+--- !u!114 &-1866304557304778106
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PulseMaterialBase
-  m_Shader: {fileID: -6465566751694194690, guid: 7d9647af740e140ca9eda71de79cc4e0, type: 3}
+  m_Name: TreatMAT
+  m_Shader: {fileID: -6465566751694194690, guid: 475bab58801fc43c9b06c56204a8a75a, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -41,10 +41,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -71,16 +67,22 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
+    - _GlowIntensity: 1
+    - _HeatProgress: 0
+    - _MaxRadius: 0.075
     - _PulseProgress: 0
     - _TapIntensity: 2
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Colour: {r: 1, g: 1, b: 1, a: 1}
-    - _EndColour: {r: 1, g: 1, b: 0, a: 1}
+    - _Colour: {r: 0.9622642, g: 0.17702031, b: 0.17702031, a: 1}
+    - _Colour1: {r: 1, g: 0.2750729, b: 0, a: 1}
+    - _Colour2: {r: 1, g: 0.10795728, b: 0, a: 0}
+    - _ColourInner: {r: 1, g: 0.033018887, b: 0.033018887, a: 0}
+    - _ColourOuter: {r: 1, g: 0.71579885, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _StartColour: {r: 1, g: 0, b: 0, a: 1}
     - _TapPoint: {r: 0, g: 0, b: 0, a: 0}
-    - _UVScaleTap: {r: 5, g: 1, b: 0, a: 0}
+    - _TapPosition: {r: 0, g: 0, b: 0, a: 0}
+    - _UVScaleTap: {r: 32, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
