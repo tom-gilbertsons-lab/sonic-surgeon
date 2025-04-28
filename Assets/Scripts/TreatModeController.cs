@@ -117,7 +117,7 @@ public class TreatModeManager : MonoBehaviour
         float uvRadiusY = hotspotRadius / height;
         float correctedHotspotRadius = (uvRadiusX + uvRadiusY) / 2f;
 
-        Debug.Log("correctedHotspotRadius = " + correctedHotspotRadius);
+        //Debug.Log("correctedHotspotRadius = " + correctedHotspotRadius);
 
         treatvfx.StartCoroutine(treatvfx.AnimateHotSpot(xShaderPos, yShaderPos, vFXDuration, correctedHotspotRadius));
 

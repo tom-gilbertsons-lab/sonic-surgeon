@@ -5,8 +5,15 @@ public class PlanVFX: MonoBehaviour
     public float pulseDuration = 0.7f;
     public bool target = false;
 
+
+    private PlanModeManager planModeManager; 
     private Material mat;
-    private Coroutine pulseRoutine;
+
+
+    private void Awake()
+    {
+        planModeManager= GetComponentInParent<PlanModeManager>();
+    }
 
     void Start()
     {
@@ -26,7 +33,7 @@ public class PlanVFX: MonoBehaviour
         mat.SetVector("_TapPoint", new Vector4(uvX, uvY, 0, 0));
 
   
-        pulseRoutine = StartCoroutine(AnimatePulse());
+        StartCoroutine(AnimatePulse());
     }
 
     System.Collections.IEnumerator AnimatePulse()
@@ -44,5 +51,11 @@ public class PlanVFX: MonoBehaviour
             yield return null;
         }
         mat.SetFloat("_PulseProgress", 0f);
+        if (target)
+        {
+            planModeManager.HitTarget();
+
+        }
+  
     }
 }
