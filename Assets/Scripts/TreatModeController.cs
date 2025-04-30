@@ -4,6 +4,8 @@ using System.Collections.Generic;
 public class TreatModeManager : MonoBehaviour
 {
 
+    public GameObject gameManagerObject;
+
     [Header("Target Settings")]
     public GameObject target;
     public float delayBeforeFade = 0.7f;
@@ -36,6 +38,10 @@ public class TreatModeManager : MonoBehaviour
     public bool treatmentComplete = false;
 
 
+
+    private GameManager gameManager;
+
+
     private void Awake()
     {
         // counting the sub nuclei 
@@ -43,6 +49,8 @@ public class TreatModeManager : MonoBehaviour
         {
             totalSubNuclei++;
         }
+
+        gameManager = gameManagerObject.GetComponent<GameManager>();
     }
 
 
@@ -89,7 +97,8 @@ public class TreatModeManager : MonoBehaviour
         if (treatedSubNuclei == totalSubNuclei)
         {
             treatmentComplete = true;
-
+            StartCoroutine(gameManager.WaitForSecs(2.0f));
+            gameManager.EndTreatMode();
        
         }
 
