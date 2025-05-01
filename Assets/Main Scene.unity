@@ -4423,7 +4423,7 @@ GameObject:
   - component: {fileID: 1614351937}
   - component: {fileID: 1614351939}
   m_Layer: 5
-  m_Name: 321Go
+  m_Name: PlanMode321
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5184,7 +5184,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startScreen: {fileID: 5609086}
   planModeIntro: {fileID: 629213246}
-  promptIntro: {fileID: 0}
   planModePrompt: {fileID: 1614351935}
   planMode: {fileID: 1913085945}
   treatMode: {fileID: 1441709639}

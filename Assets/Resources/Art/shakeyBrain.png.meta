@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      shakeyBrain_0: -63101217191263407
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

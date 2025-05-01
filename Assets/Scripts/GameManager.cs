@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,8 +10,6 @@ public class GameManager : MonoBehaviour
 
     public GameObject planModeIntro;
 
-    public GameObject promptIntro;
-    private PromptCountdown promptCountdown;
 
     public GameObject planModePrompt; 
 
@@ -39,7 +38,6 @@ public class GameManager : MonoBehaviour
     {
        planMode.SetActive(false);
        planModeIntro.SetActive(false);
-       promptCountdown = promptIntro.GetComponent<PromptCountdown>(); 
     }
 
     public void PressStart()
@@ -67,7 +65,7 @@ public class GameManager : MonoBehaviour
 
     public void BeginPlanMode()
     {
-  
+        TurnOffLED();
         CountdownOverlay.SetActive(true);
         CountdownTimer.text = "00:30";
         EnableAllColliders(planMode, true);
@@ -79,13 +77,41 @@ public class GameManager : MonoBehaviour
     public void EndPlanMode()
     {
         planMode.SetActive(false);
-        StartCoroutine(WaitForSecs(1.0f));
+        TurnOnLED();
+        StartCoroutine(WaitForSecs(5.0f));
         BeginTreatMode();
     }
+
+    public void TurnOnLED()
+    {
+        StartCoroutine(SendLEDONRequest());
+    }
+
+    IEnumerator SendLEDONRequest()
+    {
+        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:8000/on");
+        yield return request.SendWebRequest();
+        // Optional: Add error checking here if needed
+    }
+
+
+    public void TurnOffLED()
+    {
+        StartCoroutine(SendLEDOFFRequest());
+    }
+
+    IEnumerator SendLEDOFFRequest()
+    {
+        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:8000/off");
+        yield return request.SendWebRequest();
+        // Optional: Add error checking here if needed
+    }
+
 
 
     public void BeginTreatMode()
     {
+        //TurnOffLED();
         treatMode.SetActive(true);
 
     }
