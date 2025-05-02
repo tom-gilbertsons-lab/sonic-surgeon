@@ -20,14 +20,14 @@ public class PromptCountdown : MonoBehaviour
     {
         GetComponent<TextMeshProUGUI>().text = text;
         GetComponent<TextMeshProUGUI>().transform.localScale = Vector3.zero;
-        GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, 1); // fully opaque
+        GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, 1)*5f; // fully opaque
 
         float t = 0;
         float duration = 0.3f;
         while (t < duration)
         {
             t += Time.deltaTime;
-            float progress = t / duration;
+            float progress = (t / duration)*10f;
             GetComponent<TextMeshProUGUI>().transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one * 1.5f, progress);
             yield return null;
         }
