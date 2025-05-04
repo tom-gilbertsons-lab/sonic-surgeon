@@ -6,13 +6,13 @@ public class PlanVFX: MonoBehaviour
     public bool target = false;
 
 
-    private PlanModeManager planModeManager; 
+    private PlanMode planMode; 
     private Material mat;
 
 
     private void Awake()
     {
-        planModeManager= GetComponentInParent<PlanModeManager>();
+        planMode= GetComponentInParent<PlanMode>();
     }
 
     void Start()
@@ -53,7 +53,7 @@ public class PlanVFX: MonoBehaviour
         mat.SetFloat("_PulseProgress", 0f);
         if (target)
         {
-            planModeManager.HitTarget();
+            planMode.HitTarget();
 
         }
   

@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CanvasMAT
-  m_Shader: {fileID: -6465566751694194690, guid: d4936a2c871e94edcae3a36607d84f05, type: 3}
+  m_Name: BrainDrawMAT
+  m_Shader: {fileID: -6465566751694194690, guid: 739d63eab7ab84667b07c8e4ddbd1a42, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -16,7 +16,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -69,7 +69,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnableExternalAlpha: 0
-    - _GlowStrength: 1
+    - _GlowStrength: 2.2
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SampleGI: 0
@@ -82,7 +82,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _GlowColour: {r: 0.114587024, g: 0.9716981, b: 0.7965894, a: 0}
+    - _GlowColour: {r: 0.1454, g: 0.106991746, b: 0.9094299, a: 0.5529412}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

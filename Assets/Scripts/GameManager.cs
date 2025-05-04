@@ -6,19 +6,31 @@ using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviour
 {
+
+
+
+    // Plan Mode
+    private PlanModeController planModeController;
+
+
+
+    public GameObject progressIndicator;
+
+
+
     public GameObject startScreen;
+    public GameObject animateBrainTremor;
 
-    public GameObject planModeIntro;
 
 
-    public GameObject planModePrompt; 
-
-    public GameObject planMode;
     public GameObject treatMode;
 
 
     public GameObject CountdownOverlay;
     public TMP_Text CountdownTimer;
+
+  
+
 
 
     public GameObject brainPulse;
@@ -32,55 +44,76 @@ public class GameManager : MonoBehaviour
     private int timeRemaining;
 
 
+    private void Awake()
+    {
+        planModeController = GetComponent<PlanModeController>();
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private void Start()
     {
-       planMode.SetActive(false);
-       planModeIntro.SetActive(false);
+        //planMode.SetActive(false);
+        //planModeIntro.SetActive(false);
+        //treatMode.SetActive(false);
+        //RunStartScreen();
+        Debug.Log("In GameManager Start");
+        //planModeController.StartPlanModeIntro();
+
+        planModeController.StartPlanMode();
+       
+
     }
 
-    public void PressStart()
-    {
-        StartCoroutine(StartGame());
-;    }
 
-    public IEnumerator StartGame()
-    {
-        Debug.Log("Pressed Start Game");
+
+
+    //private void RunStartScreen()
+    //{
+    //    Debug.Log("in RunStartScreen");
+    //}
+
+
+//    public void PressStart()
+//    {
+//        StartCoroutine(StartGame());
+//;    }
+
+    //public IEnumerator StartGame()
+    //{
+    //    Debug.Log("Pressed Start Game");
    
-        yield return new WaitForSeconds(1.0f);
+    //    yield return new WaitForSeconds(1.0f);
         
-        startScreen.SetActive(false);
+    //    startScreen.SetActive(false);
 
-        planMode.SetActive(true);
-        EnableAllColliders(planMode, false);
-        planModeIntro.SetActive(true);
-        yield return StartCoroutine(RunPrompt(planModePrompt));
+    //    planMode.SetActive(true);
+    //    EnableAllColliders(planMode, false);
+    //    planModeIntro.SetActive(true);
+    //    yield return StartCoroutine(RunPrompt(planModePrompt));
 
-        BeginPlanMode();
-       // StartCoroutine(CountdownTimerRoutine(30));
-    }
-
-
-    public void BeginPlanMode()
-    {
-        TurnOffLED();
-        CountdownOverlay.SetActive(true);
-        CountdownTimer.text = "00:30";
-        EnableAllColliders(planMode, true);
-    }
+    //    BeginPlanMode();
+    //   // StartCoroutine(CountdownTimerRoutine(30));
+    //}
 
 
+    //public void BeginPlanMode()
+    //{
+    //    TurnOffLED();
+    //    CountdownOverlay.SetActive(true);
+    //    CountdownTimer.text = "00:30";
+    //    EnableAllColliders(planMode, true);
+    //}
 
 
-    public void EndPlanMode()
-    {
-        planMode.SetActive(false);
-        TurnOnLED();
-        StartCoroutine(WaitForSecs(5.0f));
-        BeginTreatMode();
-    }
+
+
+    //public void EndPlanMode()
+    //{
+    //    planMode.SetActive(false);
+    //    TurnOnLED();
+    //    StartCoroutine(WaitForSecs(5.0f));
+    //    BeginTreatMode();
+    //}
 
     public void TurnOnLED()
     {
