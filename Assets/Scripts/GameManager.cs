@@ -46,6 +46,17 @@ public class GameManager : MonoBehaviour
     private int timeRemaining;
 
 
+    private int planOnTarget;
+    private int planOffTarget;
+    private float planTimeRemaining;
+    private float planProgressVal;
+
+    private int treatOnTarget;
+    private int treatOffTarget;
+    private float treatTimeRemaining;
+    private float treatProgressVal;
+
+
     private void Awake()
     {
         planModeController = GetComponent<PlanModeController>();
@@ -64,11 +75,24 @@ public class GameManager : MonoBehaviour
         //RunStartScreen();
         Debug.Log("In GameManager Start");
 
-        treatModeController.StartTreatMode();
+        //treatModeController.StartTreatMode();
 
         //planModeController.StartPlanMode();
+        planModeController.StartPlanModeIntro();
 
 
+    }
+
+    public void EndOfPlanMode()
+    {
+        Debug.Log("In GameManager, end of Plan Mode");
+
+        // we will pull in complete time, n taps on target, off target 
+    }
+
+    public void EndOfTreatMode()
+    {
+        Debug.Log("In GameManager, end of Treat Mode");
     }
 
 

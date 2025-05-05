@@ -14,16 +14,16 @@ public class TreatModeController : MonoBehaviour
 
     public GameObject progress;
     private TreatProgress treatProgress;
-    private float progressVal;
-    private int dosesDelivered;
-
 
     public GameObject countdownDisplay;
     private CountdownTimer countdownTimer;
-    private int timeRemaining;
-
 
     public GameObject treatMode;
+
+    public int timeRemaining;
+    public float progressVal;
+    public int onTargetTaps = 0;
+    public int offTargetTaps = 0;
 
 
 
@@ -70,19 +70,28 @@ public class TreatModeController : MonoBehaviour
         countdownTimer.CancelCountdown();
         Debug.Log("You had " + timeRemaining.ToString() + "seconds left");
         Debug.Log($"You completed {(int)(progressVal * 100f)} % of the treatment");
+        Debug.Log("You had " + onTargetTaps.ToString() + " and " + offTargetTaps.ToString() + "off target");
 
+        gameManager.EndOfTreatMode();
 
+        //gameManager.EndO
 
     }
 
+    public void OnTargetTaps()
+    {
+        onTargetTaps++;
+    }
+
+    public void OffTargetTaps()
+    {
+        offTargetTaps++;
+    }
 
     // Canvas Overlay Methods 
     private void SetUpProgressIndicator()
     {
         progress.SetActive(true);
-        //progressIndicator = progress.transform.Find("Progress").GetComponent<Image>();
-        //progressIndicator.fillAmount = 0.0f;
-
     }
 
     private void SetUpCountdownIndicator()

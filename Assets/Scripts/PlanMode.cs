@@ -22,7 +22,9 @@ public class PlanMode : MonoBehaviour
 
 
 
-    private int onTargetHitCount = 0;
+    public int onTargetHitCount = 0;
+    public int offTargetTaps = 0;
+
 
 
     void Start()
@@ -59,6 +61,11 @@ public class PlanMode : MonoBehaviour
             planModeController.UpdateProgress(1f);
             StartCoroutine(EndPlanMode());
         }
+    }
+
+    public void ReportTapsToController()
+    {
+        planModeController.UpdateTapStats(onTargetHitCount, offTargetTaps);
     }
 
     private void StartRound1()

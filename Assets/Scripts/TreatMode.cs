@@ -39,6 +39,7 @@ public class TreatMode : MonoBehaviour
     public bool treatmentComplete = false;
 
 
+
     private void Awake()
     {
         // counting the sub nuclei 
@@ -65,6 +66,7 @@ public class TreatMode : MonoBehaviour
 
     private void TargetOverlap()
     {
+        bool hitAnyTarget = false;
 
         foreach (Transform child in target.transform)
         {
@@ -78,6 +80,7 @@ public class TreatMode : MonoBehaviour
 
             if (distance <= targetRadius + hotspotRadius)
             {
+                hitAnyTarget = true;
 
                 vimSub.AccumulateDose();
                 dosesDelivered++;
@@ -90,6 +93,17 @@ public class TreatMode : MonoBehaviour
                 }
             }
         }
+
+        if (hitAnyTarget)
+        {
+            treatModeController.OnTargetTaps();
+        }
+        else
+        {
+            treatModeController.OffTargetTaps();
+        }
+
+
 
         if (treatedSubNuclei == totalSubNuclei)
         {

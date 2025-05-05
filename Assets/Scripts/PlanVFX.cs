@@ -1,18 +1,18 @@
 using UnityEngine;
 
-public class PlanVFX: MonoBehaviour
+public class PlanVFX : MonoBehaviour
 {
     public float pulseDuration = 0.7f;
     public bool target = false;
 
 
-    private PlanMode planMode; 
+    private PlanMode planMode;
     private Material mat;
 
 
     private void Awake()
     {
-        planMode= GetComponentInParent<PlanMode>();
+        planMode = GetComponentInParent<PlanMode>();
     }
 
     void Start()
@@ -32,7 +32,7 @@ public class PlanVFX: MonoBehaviour
 
         mat.SetVector("_TapPoint", new Vector4(uvX, uvY, 0, 0));
 
-  
+
         StartCoroutine(AnimatePulse());
     }
 
@@ -43,10 +43,10 @@ public class PlanVFX: MonoBehaviour
 
         while (t < pulseDuration)
         {
-          
+
             float progress = t / pulseDuration;
-          
-            mat.SetFloat("_PulseProgress", 1.5f* progress);
+
+            mat.SetFloat("_PulseProgress", 1.5f * progress);
             t += Time.deltaTime;
             yield return null;
         }
@@ -56,6 +56,11 @@ public class PlanVFX: MonoBehaviour
             planMode.HitTarget();
 
         }
-  
+        else
+        {
+            planMode.offTargetTaps++;
+        }
+        planMode.ReportTapsToController();
+
     }
 }

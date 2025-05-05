@@ -20,7 +20,6 @@ public class TreatProgress : MonoBehaviour
 
     public void ShowProgress(int count)
     {
-        Debug.Log("IN SHOWPROGRESS " + count.ToString());
 
         stage3.SetActive(count == 24);
         stage4.SetActive(count == 24);

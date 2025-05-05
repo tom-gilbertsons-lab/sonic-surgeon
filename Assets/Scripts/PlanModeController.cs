@@ -7,27 +7,31 @@ public class PlanModeController : MonoBehaviour
 {
     // Game Mananger Objects 
     public GameObject gameManagerObject;
+    private GameManager gameManager;
 
     // Canvas Objects
-    //public GameObject planModeIntro;
-    // public GameObject planModePrompt;
+    public GameObject planModeIntroObj;
+    private ModeIntro planModeIntro;
 
     public GameObject progress;
     private PlanProgress planProgress;
-    private float progressVal;
 
     public GameObject countdownDisplay;
     private CountdownTimer countdownTimer;
-    private int timeRemaining;
-
 
     public GameObject planMode;
 
+    public int timeRemaining;
+    public float progressVal;
+    public int onTargetTaps = 0;
+    public int offTargetTaps = 0;
 
     void Awake()
     {
         countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
         planProgress = progress.GetComponent<PlanProgress>();
+        planModeIntro = planModeIntroObj.GetComponent<ModeIntro>();
+        gameManager = gameManagerObject.GetComponent<GameManager>();
     }
 
     private void Update()
@@ -43,17 +47,18 @@ public class PlanModeController : MonoBehaviour
 
     public void StartPlanModeIntro()
     {
-        // get the backgrounds & initalise the scripts 
+        // get the backgrounds & initalise the scripts
+        planModeIntroObj.SetActive(true);
         planMode.SetActive(true);
-        planMode.transform.Find("Round1").gameObject.SetActive(false);
-        planMode.transform.Find("Round2").gameObject.SetActive(false);
-        planMode.transform.Find("Round3").gameObject.SetActive(false);
+        gameManager.EnableAllColliders(planMode, false);
+        StartCoroutine(planModeIntro.RunFullIntro(StartPlanMode));
 
     }
 
 
     public void StartPlanMode()
     {
+        gameManager.EnableAllColliders(planMode, true);
         SetUpProgressIndicator();
         SetUpCountdownIndicator();
         Debug.Log("In PlanModeController StartPlanMode");
@@ -63,13 +68,24 @@ public class PlanModeController : MonoBehaviour
 
     public void EndPlanMode()
     {
+
         Debug.Log("Finished Plan ");
         countdownTimer.CancelCountdown();
         Debug.Log("You had " + timeRemaining.ToString() + "seconds left");
         Debug.Log($"You completed {(int)(progressVal * 100f)} % of the plan");
 
+        Debug.Log("You had " + onTargetTaps.ToString() + " and " + offTargetTaps.ToString() + "off target");
+
+        gameManager.EndOfPlanMode();
 
 
+
+    }
+
+    public void UpdateTapStats(int onTarget, int offTarget)
+    {
+        onTargetTaps = onTarget;
+        offTargetTaps = offTarget;
     }
 
     // Canvas Overlay Methods 
@@ -81,11 +97,10 @@ public class PlanModeController : MonoBehaviour
 
     private void SetUpCountdownIndicator()
     {
-        Debug.Log(countdownTimer);
-        Debug.Log(countdownDisplay);
         countdownDisplay.SetActive(true);
         countdownTimer.StartCountdown();
     }
+
 
     public void UpdateProgress(float progress)
     {
