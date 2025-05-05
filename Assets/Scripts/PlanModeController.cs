@@ -10,37 +10,39 @@ public class PlanModeController : MonoBehaviour
     private GameManager gameManager;
 
     // Canvas Objects
-    public GameObject planModeIntro;
-    public GameObject planModePrompt;
+    //public GameObject planModeIntro;
+    // public GameObject planModePrompt;
 
     public GameObject progress;
     private Image progressIndicator;
+    private float progressVal;
 
     public GameObject countdownDisplay;
     private CountdownTimer countdownTimer;
-
-    public int duration = 30;
     private int timeRemaining;
 
 
     public GameObject planMode;
 
 
-    void Start()
+    void Awake()
     {
         gameManager = gameManagerObject.GetComponent<GameManager>();
         countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
+        Debug.Log(countdownTimer);
+        Debug.Log(countdownDisplay);
     }
-
 
     private void Update()
     {
+        timeRemaining = countdownTimer.timeRemaining;
         if (countdownTimer != null && countdownTimer.complete)
         {
-            countdownTimer.complete = false; //to stop another execution
-            StartCoroutine(EndPlanMode());
+            countdownTimer.CancelCountdown();
+            EndPlanMode();
         }
     }
+
 
     public void StartPlanModeIntro()
     {
@@ -62,11 +64,14 @@ public class PlanModeController : MonoBehaviour
     }
 
 
-    public IEnumerator EndPlanMode()
+    public void EndPlanMode()
     {
-        Debug.Log("Finished Plan:: ie Complete, do stuff, set off an 'end of plan mode' thing ");
+        Debug.Log("Finished Plan ");
+        countdownTimer.CancelCountdown();
+        Debug.Log("You had " + timeRemaining.ToString() + "seconds left");
+        Debug.Log($"You completed {(int)(progressVal * 100f)} % of the plan");
 
-        yield return new WaitForSeconds(1.0f);
+
 
     }
 
@@ -81,12 +86,15 @@ public class PlanModeController : MonoBehaviour
 
     private void SetUpCountdownIndicator()
     {
+        Debug.Log(countdownTimer);
+        Debug.Log(countdownDisplay);
         countdownDisplay.SetActive(true);
         countdownTimer.StartCountdown();
     }
 
     public void UpdateProgress(float progress)
     {
+        progressVal = progress;
         progressIndicator.fillAmount = progress;
     }
 

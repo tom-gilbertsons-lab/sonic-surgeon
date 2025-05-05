@@ -24,7 +24,7 @@ public class PlanMode : MonoBehaviour
 
     private int onTargetHitCount = 0;
 
- 
+
     void Start()
     {
         planModeController = gameManagerObject.GetComponent<PlanModeController>();
@@ -64,7 +64,7 @@ public class PlanMode : MonoBehaviour
     private void StartRound1()
     {
         round1.SetActive(true);
-        
+
         round2.SetActive(false);
         round3.SetActive(false);
     }
@@ -86,7 +86,6 @@ public class PlanMode : MonoBehaviour
     private IEnumerator EndPlanMode()
     {
         Debug.Log("Finished Plan Mode, Do Stuff pass back to PMC ");
-
         yield return new WaitForSeconds(1.0f);
         planModeController.EndPlanMode();
 

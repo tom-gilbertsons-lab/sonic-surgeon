@@ -1,144 +1,97 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class TreatModeManager : MonoBehaviour
+public class TreatModeController : MonoBehaviour
 {
-
+    // Game Mananger Objects 
     public GameObject gameManagerObject;
-
-    [Header("Target Settings")]
-    public GameObject target;
-    public float delayBeforeFade = 0.7f;
-    public float fadeDuration = 0.5f;
-
-    public Color[] doseColours = new Color[] {
-        new Color(1f, 0f, 0f, 0.4f),  
-        new Color(1f, 0.5f, 0f, 0.6f),
-        new Color(0f, 1f, 0f, 1f)     
-    };
-   
-
-    [Header("VFX Settings")]
-    public float hotspotRadius = 0.5f;
-    public GameObject vFXPrefab;
-    public Transform vFXParent;
-    public float vFXDuration = 1.0f;
-    private List<GameObject> activeVFX = new List<GameObject>();
-
-
-
-    private Vector3 worldClick;
-    
-    private int totalSubNuclei = 0;
-    private int treatedSubNuclei = 0;
-    private int dosesDelivered = 0;
-
-    // to pass to gameManager 
-    public float proportionTreated = 0f;
-    public bool treatmentComplete = false;
-
-
-
     private GameManager gameManager;
 
+    // Canvas Objects
+    //public GameObject treatModeIntro;
+    // public GameObject planModePrompt;
 
-    private void Awake()
+    public GameObject progress;
+    private Image progressIndicator;
+    private float progressVal;
+
+    public GameObject countdownDisplay;
+    private CountdownTimer countdownTimer;
+    private int timeRemaining;
+
+
+    public GameObject treatMode;
+
+
+
+    void Awake()
     {
-        // counting the sub nuclei 
-        foreach (Transform child in target.transform)
-        {
-            totalSubNuclei++;
-        }
-
         gameManager = gameManagerObject.GetComponent<GameManager>();
+        countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
+    }
+
+    private void Update()
+    {
+        timeRemaining = countdownTimer.timeRemaining;
+        if (countdownTimer != null && countdownTimer.complete)
+        {
+            countdownTimer.CancelCountdown();
+            EndTreatMode();
+        }
+    }
+
+    public void StartTreatModeIntro()
+    {
+        // get the backgrounds & initalise the scripts
+        // disable the colliders 
+        treatMode.SetActive(true);
+        gameManager.EnableAllColliders(treatMode, false);
     }
 
 
-
-    private void OnMouseDown()
+    public void StartTreatMode()
     {
-        // onClick make hotspot and check if we are near target 
+        treatMode.SetActive(true);
+        gameManager.EnableAllColliders(treatMode, true);
+        SetUpProgressIndicator();
+        SetUpCountdownIndicator();
+        Debug.Log("In TreatModeController StartTreatMode");
+    }
 
-        worldClick = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    // this will go into stats at the end: 
+    public void EndTreatMode()
+    {
+        Debug.Log("Finished Treat:: ie Complete, do stuff, set off an 'end of plan mode' thing ");
 
-        TargetOverlap();
-        SpawnVFX();
-        
+        countdownTimer.CancelCountdown();
+        Debug.Log("You had " + timeRemaining.ToString() + "seconds left");
+        Debug.Log($"You completed {(int)(progressVal * 100f)} % of the treatment");
+
+
+
     }
 
 
-    private void TargetOverlap()
+    // Canvas Overlay Methods 
+    private void SetUpProgressIndicator()
     {
-
-        foreach (Transform child in target.transform)
-        {
-
-            VimDose vimSub = child.GetComponent<VimDose>();
-            if (vimSub == null || vimSub.IsMaxed())
-                continue;
-
-            float targetRadius = vimSub.sr.bounds.extents.magnitude;
-            float distance = Vector2.Distance(worldClick, child.position);
-
-            if (distance <= targetRadius + hotspotRadius)
-            {
-                
-                vimSub.AccumulateDose();
-                dosesDelivered++;
-                proportionTreated = dosesDelivered / (3 * totalSubNuclei);
-                Debug.Log("Total Doses Possible " + proportionTreated.ToString());
-                if (vimSub.IsMaxed())
-                {
-                    treatedSubNuclei++;
-                }
-            }
-        }
-
-        if (treatedSubNuclei == totalSubNuclei)
-        {
-            treatmentComplete = true;
-            StartCoroutine(gameManager.WaitForSecs(2.0f));
-            gameManager.EndTreatMode();
-       
-        }
+        progress.SetActive(true);
+        progressIndicator = progress.transform.Find("Progress").GetComponent<Image>();
+        progressIndicator.fillAmount = 0.0f;
 
     }
 
-  
-
-    private void SpawnVFX()
+    private void SetUpCountdownIndicator()
     {
-        GameObject newVFX = Instantiate(vFXPrefab, Vector3.zero, Quaternion.identity, vFXParent);
+        countdownDisplay.SetActive(true);
+        countdownTimer.StartCountdown();
+    }
 
-        SpriteRenderer vfxSR = newVFX.GetComponent<SpriteRenderer>();
-        TreatVFX treatvfx = newVFX.GetComponent<TreatVFX>();
-
-        Vector2 localClick = vfxSR.transform.InverseTransformPoint(worldClick);
-
-        float xShaderPos = (localClick.x / vfxSR.sprite.bounds.size.x) + 0.5f;
-        float yShaderPos = (localClick.y / vfxSR.sprite.bounds.size.y) + 0.5f;
-
-   
-        float width = vfxSR.sprite.bounds.size.x * vfxSR.transform.lossyScale.x;
-        float height = vfxSR.sprite.bounds.size.y * vfxSR.transform.lossyScale.y;
-
-        float uvRadiusX = hotspotRadius / width;
-        float uvRadiusY = hotspotRadius / height;
-        float correctedHotspotRadius = (uvRadiusX + uvRadiusY) / 2f;
-
-        //Debug.Log("correctedHotspotRadius = " + correctedHotspotRadius);
-
-        treatvfx.StartCoroutine(treatvfx.AnimateHotSpot(xShaderPos, yShaderPos, vFXDuration, correctedHotspotRadius));
-
-        activeVFX.Add(newVFX);
-
-        if (activeVFX.Count > 4)
-        {
-            Destroy(activeVFX[0]);
-            activeVFX.RemoveAt(0);
-        }
-
-        Destroy(newVFX, vFXDuration + 0.1f);
+    public void UpdateProgress(float progress)
+    {
+        progressVal = progress;
+        progressIndicator.fillAmount = progress;
     }
 
 

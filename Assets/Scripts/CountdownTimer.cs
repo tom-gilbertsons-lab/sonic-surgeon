@@ -12,7 +12,7 @@ public class CountdownTimer : MonoBehaviour
     public int duration = 30;
     public bool complete = false;
 
-    private int timeRemaining;
+    public int timeRemaining;
 
     public void StartCountdown()
     {
@@ -21,9 +21,15 @@ public class CountdownTimer : MonoBehaviour
         StartCoroutine(CountdownRoutine());
     }
 
+    public void CancelCountdown()
+    {
+        StopAllCoroutines();
+        complete = false;
+    }
+
     private IEnumerator CountdownRoutine()
     {
-        while (timeRemaining > 0)
+        while (timeRemaining > 0 && !complete)
         {
             countdownClock.text = $"00:{timeRemaining:00}";
             // Add flash effect here if you want
@@ -31,9 +37,16 @@ public class CountdownTimer : MonoBehaviour
             timeRemaining--;
         }
 
-        countdownClock.text = "00:00";
-        complete = true;
+        if (!complete)
+        {
+            countdownClock.text = "00:00";
+            complete = true;
+        }
+
     }
+
+
+
 }
 
 

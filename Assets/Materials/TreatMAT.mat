@@ -67,17 +67,17 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _GlowIntensity: 1
+    - _GlowIntensity: 2
     - _HeatProgress: 0
-    - _MaxRadius: 0.075
+    - _MaxRadius: 0.05
     - _PulseProgress: 0
     - _TapIntensity: 2
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Colour: {r: 0.9622642, g: 0.17702031, b: 0.17702031, a: 1}
-    - _Colour1: {r: 1, g: 0.2750729, b: 0, a: 1}
-    - _Colour2: {r: 1, g: 0.10795728, b: 0, a: 0}
+    - _Colour1: {r: 3.482202, g: 0, b: 0, a: 1}
+    - _Colour2: {r: 63.999992, g: 5.0550275, b: 0, a: 0}
     - _ColourInner: {r: 1, g: 0.033018887, b: 0.033018887, a: 0}
     - _ColourOuter: {r: 1, g: 0.71579885, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}

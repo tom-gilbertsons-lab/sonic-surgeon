@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     // Plan Mode
     private PlanModeController planModeController;
 
+    private TreatModeController treatModeController;
+
 
 
     public GameObject progressIndicator;
@@ -26,10 +28,10 @@ public class GameManager : MonoBehaviour
     public GameObject treatMode;
 
 
-    public GameObject CountdownOverlay;
-    public TMP_Text CountdownTimer;
+    public GameObject countdownOverlay;
+    public CountdownTimer countdownTimer;
 
-  
+
 
 
 
@@ -47,8 +49,12 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         planModeController = GetComponent<PlanModeController>();
+        treatModeController = GetComponent<TreatModeController>();
+
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    // StartPlanMode 
 
     private void Start()
     {
@@ -57,12 +63,16 @@ public class GameManager : MonoBehaviour
         //treatMode.SetActive(false);
         //RunStartScreen();
         Debug.Log("In GameManager Start");
-        //planModeController.StartPlanModeIntro();
 
-        planModeController.StartPlanMode();
-       
+        treatModeController.StartTreatMode();
+
+        //planModeController.StartPlanMode();
+
 
     }
+
+
+
 
 
 
@@ -73,17 +83,17 @@ public class GameManager : MonoBehaviour
     //}
 
 
-//    public void PressStart()
-//    {
-//        StartCoroutine(StartGame());
-//;    }
+    //    public void PressStart()
+    //    {
+    //        StartCoroutine(StartGame());
+    //;    }
 
     //public IEnumerator StartGame()
     //{
     //    Debug.Log("Pressed Start Game");
-   
+
     //    yield return new WaitForSeconds(1.0f);
-        
+
     //    startScreen.SetActive(false);
 
     //    planMode.SetActive(true);
@@ -158,25 +168,25 @@ public class GameManager : MonoBehaviour
     }
 
     public IEnumerator WaitForSecs(float secs)
-    { 
+    {
         yield return new WaitForSeconds(secs);
 
     }
 
 
 
-    private IEnumerator CountdownTimerRoutine(int duration)
-    {
-        timeRemaining = duration;
-        while (timeRemaining > 0)
-        {
-            CountdownTimer.text = $"00:{timeRemaining:00}";
-            yield return new WaitForSeconds(1f);
-            timeRemaining--;
-        }
+    //private IEnumerator CountdownTimerRoutine(int duration)
+    //{
+    //    timeRemaining = duration;
+    //    while (timeRemaining > 0)
+    //    {
+    //        CountdownTimer.text = $"00:{timeRemaining:00}";
+    //        yield return new WaitForSeconds(1f);
+    //        timeRemaining--;
+    //    }
 
-        CountdownTimer.text = "00:00";
-    }
+    //    CountdownTimer.text = "00:00";
+    //}
 
     // utilities 
 

@@ -5,7 +5,7 @@ public class VimDose : MonoBehaviour
     // cycles through colour change 
 
     public SpriteRenderer sr;
-    private TreatModeManager treatModeManager;
+    private TreatMode treatMode;
 
     private int doseCount = 0;
 
@@ -26,7 +26,7 @@ public class VimDose : MonoBehaviour
 
 
         // Find manager automatically in parent hierarchy:
-        treatModeManager = GetComponentInParent<TreatModeManager>();
+        treatMode = GetComponentInParent<TreatMode>();
         startColour = sr.color;
         treatedColour = sr.color;
     }
@@ -43,7 +43,7 @@ public class VimDose : MonoBehaviour
             }
 
             fadeDose += Time.deltaTime;
-            float t = fadeDose / treatModeManager.fadeDuration;
+            float t = fadeDose / treatMode.fadeDuration;
             sr.color = Color.Lerp(startColour, treatedColour, t);
 
             if (t >= 1f)
@@ -58,10 +58,10 @@ public class VimDose : MonoBehaviour
 
     public void AccumulateDose()
     {
-        if (doseCount >= treatModeManager.doseColours.Length) return;
+        if (doseCount >= treatMode.doseColours.Length) return;
 
         doseCount++;
-        Color baseColour = treatModeManager.doseColours[doseCount - 1];
+        Color baseColour = treatMode.doseColours[doseCount - 1];
 
         // Add v slight variation to the RGB 
         float dapple = 0.2f;
@@ -72,7 +72,7 @@ public class VimDose : MonoBehaviour
 
         treatedColour = new Color(newR, newG, newB, baseColour.a);
 
-        delayDose = treatModeManager.delayBeforeFade;
+        delayDose = treatMode.delayBeforeFade;
         fadeDose = 0f;
         isHeating = true;
     }
@@ -80,7 +80,7 @@ public class VimDose : MonoBehaviour
 
     public bool IsMaxed()
     {
-        return doseCount >= treatModeManager.doseColours.Length;
+        return doseCount >= treatMode.doseColours.Length;
     }
 }
 
