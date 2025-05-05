@@ -19,6 +19,9 @@ public class PlanModeController : MonoBehaviour
     public GameObject countdownDisplay;
     private CountdownTimer countdownTimer;
 
+
+    public bool planModeComplete;
+
     public GameObject planMode;
 
     public int timeRemaining;
@@ -63,6 +66,7 @@ public class PlanModeController : MonoBehaviour
         SetUpCountdownIndicator();
         Debug.Log("In PlanModeController StartPlanMode");
         planMode.SetActive(true); // when this is active it activates the scripts in PlanMode
+        planModeIntroObj.SetActive(false);
     }
 
 
@@ -76,11 +80,29 @@ public class PlanModeController : MonoBehaviour
 
         Debug.Log("You had " + onTargetTaps.ToString() + " and " + offTargetTaps.ToString() + "off target");
 
+        if (onTargetTaps >= 3)
+        {
+            planModeComplete = true;
+        }
+        else
+        {
+            planModeComplete = false;
+        }
+
+
         gameManager.EndOfPlanMode();
 
 
-
     }
+
+    public void DeactivatePlanMode()
+    {
+        planMode.SetActive(false);
+        progress.SetActive(false);
+        countdownDisplay.SetActive(false);
+    }
+
+
 
     public void UpdateTapStats(int onTarget, int offTarget)
     {

@@ -5,7 +5,7 @@ using TMPro;
 
 public class CanvasEffects : MonoBehaviour
 {
-    public IEnumerator TypeText(TextMeshProUGUI textElement, string fullText, float letterDelay = 0.05f)
+    public IEnumerator TypeText(TextMeshProUGUI textElement, string fullText, float letterDelay = 0.3f)
     {
         textElement.text = "";
         foreach (char c in fullText)

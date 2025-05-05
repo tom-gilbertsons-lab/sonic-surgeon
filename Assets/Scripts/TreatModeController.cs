@@ -9,8 +9,10 @@ public class TreatModeController : MonoBehaviour
     private GameManager gameManager;
 
     // Canvas Objects
-    //public GameObject treatModeIntro;
-    // public GameObject planModePrompt;
+    // Canvas Objects
+    public GameObject treatModeIntroObj;
+    private ModeIntro treatModeIntro;
+
 
     public GameObject progress;
     private TreatProgress treatProgress;
@@ -32,6 +34,7 @@ public class TreatModeController : MonoBehaviour
         gameManager = gameManagerObject.GetComponent<GameManager>();
         countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
         treatProgress = progress.GetComponent<TreatProgress>();
+        treatModeIntro = treatModeIntroObj.GetComponent<ModeIntro>();
     }
 
     private void Update()
@@ -47,20 +50,23 @@ public class TreatModeController : MonoBehaviour
     public void StartTreatModeIntro()
     {
         // get the backgrounds & initalise the scripts
-        // disable the colliders 
+        // disable the colliders
+        treatModeIntroObj.SetActive(true);
         treatMode.SetActive(true);
         gameManager.EnableAllColliders(treatMode, false);
+        StartCoroutine(treatModeIntro.RunFullIntro(StartTreatMode));
     }
 
 
     public void StartTreatMode()
     {
-        treatMode.SetActive(true);
         gameManager.EnableAllColliders(treatMode, true);
         SetUpProgressIndicator();
         SetUpCountdownIndicator();
         Debug.Log("In TreatModeController StartTreatMode");
+        treatModeIntroObj.SetActive(false);
     }
+
 
     // this will go into stats at the end: 
     public void EndTreatMode()

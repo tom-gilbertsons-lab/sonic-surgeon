@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -7,45 +8,26 @@ using UnityEngine.Networking;
 public class GameManager : MonoBehaviour
 {
 
+    // Canvas Objects 
+    public GameObject startScreen;
 
-
-    // Plan Mode
+    // Mode Controllers 
     private PlanModeController planModeController;
-
     private TreatModeController treatModeController;
 
 
 
-    // public GameObject progressIndicator;
+    // Transition Elper Script: move o PCS when I'm ready 
+    public GameObject planCompleteScreen;
+    public Image planCompleteBackground;
+    public TextMeshProUGUI planCompleteText;
+    public CanvasEffects canvasEffects;
+
+    public GameObject statsBox;
+    public StatBuilder statBuilder;
 
 
-
-    public GameObject startScreen;
-    public GameObject animateBrainTremor;
-
-
-
-    public GameObject treatMode;
-
-
-    public GameObject countdownOverlay;
-    public CountdownTimer countdownTimer;
-
-
-
-
-
-    public GameObject brainPulse;
-
-
-
-
-    public int planTime = 30;
-    private bool inCountdown = true;
-
-    private int timeRemaining;
-
-
+    // Stats at the end: 
     private int planOnTarget;
     private int planOffTarget;
     private float planTimeRemaining;
@@ -63,31 +45,37 @@ public class GameManager : MonoBehaviour
         treatModeController = GetComponent<TreatModeController>();
 
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    // StartPlanMode 
 
     private void Start()
     {
-        //planMode.SetActive(false);
-        //planModeIntro.SetActive(false);
-        //treatMode.SetActive(false);
         //RunStartScreen();
         Debug.Log("In GameManager Start");
 
-        //treatModeController.StartTreatMode();
 
-        //planModeController.StartPlanMode();
-        planModeController.StartPlanModeIntro();
 
+
+        planModeController.StartPlanModeIntro(); // works 
+        //treatModeController.StartTreatModeIntro(); // works 
 
     }
+
+    // we will pull in complete time, n taps on target, off target in both of these 
+    // for a final summary I think
 
     public void EndOfPlanMode()
     {
         Debug.Log("In GameManager, end of Plan Mode");
 
-        // we will pull in complete time, n taps on target, off target 
+        if (planModeController.planModeComplete)
+        {
+            Debug.Log("Show Congratulations Screen + button continue to treat");
+            StartCoroutine(ShowPlanCompleteScreen());
+        }
+        else
+        {
+            Debug.Log("Show Planning Failed- return to medical school");
+        }
     }
 
     public void EndOfTreatMode()
@@ -95,59 +83,52 @@ public class GameManager : MonoBehaviour
         Debug.Log("In GameManager, end of Treat Mode");
     }
 
+    private IEnumerator ShowPlanCompleteScreen()
+    {
+        planCompleteScreen.SetActive(true);
+
+        // Set initial alpha
+        var bgCol = planCompleteBackground.color;
+        bgCol.a = 0;
+        planCompleteBackground.color = bgCol;
+
+        var txtCol = planCompleteText.color;
+        txtCol.a = 0;
+        planCompleteText.color = txtCol;
+
+        // Fade in background and text
+        yield return StartCoroutine(canvasEffects.FadeImage(planCompleteBackground, 0f, 1f, 1.5f));
+        planModeController.DeactivatePlanMode();
+        yield return StartCoroutine(canvasEffects.FadeText(planCompleteText, 0f, 1f, 2f));
+
+        yield return new WaitForSeconds(10f);
+
+        planCompleteScreen.SetActive(false);
+        treatModeController.StartTreatModeIntro();
+    }
 
 
 
 
+    // Utils
+
+    public void EndSession()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 
 
-    //private void RunStartScreen()
-    //{
-    //    Debug.Log("in RunStartScreen");
-    //}
+    public void EnableAllColliders(GameObject gameObject, bool enable)
+    {
+        BoxCollider2D[] colliders = gameObject.GetComponentsInChildren<BoxCollider2D>(includeInactive: true);
+        foreach (var col in colliders)
+        {
+            col.enabled = enable;
+        }
+    }
 
 
-    //    public void PressStart()
-    //    {
-    //        StartCoroutine(StartGame());
-    //;    }
-
-    //public IEnumerator StartGame()
-    //{
-    //    Debug.Log("Pressed Start Game");
-
-    //    yield return new WaitForSeconds(1.0f);
-
-    //    startScreen.SetActive(false);
-
-    //    planMode.SetActive(true);
-    //    EnableAllColliders(planMode, false);
-    //    planModeIntro.SetActive(true);
-    //    yield return StartCoroutine(RunPrompt(planModePrompt));
-
-    //    BeginPlanMode();
-    //   // StartCoroutine(CountdownTimerRoutine(30));
-    //}
-
-
-    //public void BeginPlanMode()
-    //{
-    //    TurnOffLED();
-    //    CountdownOverlay.SetActive(true);
-    //    CountdownTimer.text = "00:30";
-    //    EnableAllColliders(planMode, true);
-    //}
-
-
-
-
-    //public void EndPlanMode()
-    //{
-    //    planMode.SetActive(false);
-    //    TurnOnLED();
-    //    StartCoroutine(WaitForSecs(5.0f));
-    //    BeginTreatMode();
-    //}
+    //rPI
 
     public void TurnOnLED()
     {
@@ -176,65 +157,7 @@ public class GameManager : MonoBehaviour
 
 
 
-    public void BeginTreatMode()
-    {
-        //TurnOffLED();
-        treatMode.SetActive(true);
 
-    }
-
-
-    public void EndTreatMode()
-    {
-        StartCoroutine(WaitForSecs(1.0f));
-        treatMode.SetActive(false);
-        EndSession();
-    }
-
-    public IEnumerator WaitForSecs(float secs)
-    {
-        yield return new WaitForSeconds(secs);
-
-    }
-
-
-
-    //private IEnumerator CountdownTimerRoutine(int duration)
-    //{
-    //    timeRemaining = duration;
-    //    while (timeRemaining > 0)
-    //    {
-    //        CountdownTimer.text = $"00:{timeRemaining:00}";
-    //        yield return new WaitForSeconds(1f);
-    //        timeRemaining--;
-    //    }
-
-    //    CountdownTimer.text = "00:00";
-    //}
-
-    // utilities 
-
-    public void EndSession()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-
-    public void EnableAllColliders(GameObject gameObject, bool enable)
-    {
-        BoxCollider2D[] colliders = gameObject.GetComponentsInChildren<BoxCollider2D>(includeInactive: true);
-        foreach (var col in colliders)
-        {
-            col.enabled = enable;
-        }
-    }
-
-    public IEnumerator RunPrompt(GameObject promptObject)
-    {
-        promptObject.SetActive(true);
-        yield return StartCoroutine(promptObject.GetComponent<PromptCountdown>().PromptOpener());
-        promptObject.SetActive(false);
-    }
 
 }
 

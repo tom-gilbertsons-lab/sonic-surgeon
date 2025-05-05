@@ -4,47 +4,58 @@ using TMPro;
 
 public class PromptCountdown : MonoBehaviour
 {
+    private TextMeshProUGUI tmp;
+
+    private void Awake()
+    {
+        tmp = GetComponent<TextMeshProUGUI>();
+    }
 
     public IEnumerator PromptOpener()
     {
         string[] countdown = { "3", "2", "1", "GO!" };
         foreach (string step in countdown)
         {
-            StartCoroutine(AnimatePrompt(step));
-            yield return new WaitForSeconds(1f);
+            yield return StartCoroutine(AnimatePrompt(step));
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
-
     private IEnumerator AnimatePrompt(string text)
     {
-        GetComponent<TextMeshProUGUI>().text = text;
-        GetComponent<TextMeshProUGUI>().transform.localScale = Vector3.zero;
-        GetComponent<TextMeshProUGUI>().color = new Color(1, 1, 1, 1) * 5f; // fully opaque
+        tmp.text = text;
+        tmp.transform.localScale = Vector3.zero;
+        tmp.color = new Color(1f, 1f, 1f, 1f); // fully opaque, no bloom weirdness
 
-        float t = 0;
         float duration = 0.3f;
+        float t = 0f;
+
+        // Scale up
         while (t < duration)
         {
             t += Time.deltaTime;
-            float progress = (t / duration) * 10f;
-            GetComponent<TextMeshProUGUI>().transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one * 1.5f, progress);
+            float progress = t / duration;
+            tmp.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one * 1.5f, progress);
             yield return null;
         }
 
-        yield return new WaitForSeconds(0.2f); // hold the big text
+        // Hold big text
+        yield return new WaitForSeconds(0.3f);
 
-        // fade out
-        t = 0;
+        // Fade out
+        t = 0f;
         duration = 0.5f;
-        Color startColor = GetComponent<TextMeshProUGUI>().color;
+        Color startColor = tmp.color;
+
         while (t < duration)
         {
             t += Time.deltaTime;
             float alpha = Mathf.Lerp(1f, 0f, t / duration);
-            GetComponent<TextMeshProUGUI>().color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+            tmp.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
             yield return null;
         }
-    }
 
+        tmp.text = "";
+        tmp.transform.localScale = Vector3.one; // reset scale
+    }
 }
