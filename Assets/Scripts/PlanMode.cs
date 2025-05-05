@@ -44,19 +44,19 @@ public class PlanMode : MonoBehaviour
         if (onTargetHitCount == 1)
         {
             targetIndicator1.color = new Color(treatGreen.r, treatGreen.g, treatGreen.b, 0.05f);
-            planModeController.UpdateProgress(0.3f);
+            planModeController.UpdateProgress(0.33f);
             StartRound2();
         }
         else if (onTargetHitCount == 2)
         {
             targetIndicator2.color = new Color(treatGreen.r, treatGreen.g, treatGreen.b, 0.1f);
-            planModeController.UpdateProgress(0.6f);
+            planModeController.UpdateProgress(0.66f);
             StartRound3();
         }
         else if (onTargetHitCount >= 3)
         {
             targetIndicator3.color = new Color(treatGreen.r, treatGreen.g, treatGreen.b, 1.0f);
-            planModeController.UpdateProgress(0.9f);
+            planModeController.UpdateProgress(1f);
             StartCoroutine(EndPlanMode());
         }
     }

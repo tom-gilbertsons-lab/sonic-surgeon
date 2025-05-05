@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 
 
 
-    public GameObject progressIndicator;
+    // public GameObject progressIndicator;
 
 
 

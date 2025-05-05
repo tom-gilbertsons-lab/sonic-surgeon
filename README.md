@@ -3,9 +3,12 @@
 
 # The Thalamotomist
 
-Educational neurosurgical game showcasing treatment protocol for MRgFUS thalamotomy for essential tremor.
+**Educational game showcasing non invasive neurosurgery for movement disorders.**
+
+Magtreatment protocol for MRgFUS thalamotomy for essential tremor.
 Plan a treatment; and treat the target.
-Suitable for outreach events where players get 1-2 goes max as the game doesn't have difficulty levels and is easy to beat!
+
+Suitable for outreach events where players get 1-2 goes max (the game doesn't have difficulty levels and is easy to beat!)
 
 <a  href="https://tom-gilbertsons-lab.github.io/patchLSD/"  target="_blank">Play Online</a> to play online*
 But much better to pair with a wobbling table as cotrolled via studd.

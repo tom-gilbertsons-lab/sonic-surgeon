@@ -13,8 +13,10 @@ public class TreatModeController : MonoBehaviour
     // public GameObject planModePrompt;
 
     public GameObject progress;
-    private Image progressIndicator;
+    private TreatProgress treatProgress;
     private float progressVal;
+    private int dosesDelivered;
+
 
     public GameObject countdownDisplay;
     private CountdownTimer countdownTimer;
@@ -29,6 +31,7 @@ public class TreatModeController : MonoBehaviour
     {
         gameManager = gameManagerObject.GetComponent<GameManager>();
         countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
+        treatProgress = progress.GetComponent<TreatProgress>();
     }
 
     private void Update()
@@ -77,8 +80,8 @@ public class TreatModeController : MonoBehaviour
     private void SetUpProgressIndicator()
     {
         progress.SetActive(true);
-        progressIndicator = progress.transform.Find("Progress").GetComponent<Image>();
-        progressIndicator.fillAmount = 0.0f;
+        //progressIndicator = progress.transform.Find("Progress").GetComponent<Image>();
+        //progressIndicator.fillAmount = 0.0f;
 
     }
 
@@ -88,10 +91,10 @@ public class TreatModeController : MonoBehaviour
         countdownTimer.StartCountdown();
     }
 
-    public void UpdateProgress(float progress)
+    public void UpdateProgress(float progress, int dosesDelivered)
     {
         progressVal = progress;
-        progressIndicator.fillAmount = progress;
+        treatProgress.ShowProgress(dosesDelivered);
     }
 
 

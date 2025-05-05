@@ -32,7 +32,7 @@ public class TreatMode : MonoBehaviour
 
     private int totalSubNuclei = 0;
     private int treatedSubNuclei = 0;
-    private int dosesDelivered = 0;
+    public int dosesDelivered = 0;
 
     // to pass to TreatModeController
     public float proportionTreated = 0f;
@@ -82,7 +82,7 @@ public class TreatMode : MonoBehaviour
                 vimSub.AccumulateDose();
                 dosesDelivered++;
                 proportionTreated = (float)dosesDelivered / (3 * (float)totalSubNuclei);
-                treatModeController.UpdateProgress(proportionTreated);
+                treatModeController.UpdateProgress(proportionTreated, dosesDelivered);
 
                 if (vimSub.IsMaxed())
                 {

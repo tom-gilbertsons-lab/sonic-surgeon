@@ -7,14 +7,13 @@ public class PlanModeController : MonoBehaviour
 {
     // Game Mananger Objects 
     public GameObject gameManagerObject;
-    private GameManager gameManager;
 
     // Canvas Objects
     //public GameObject planModeIntro;
     // public GameObject planModePrompt;
 
     public GameObject progress;
-    private Image progressIndicator;
+    private PlanProgress planProgress;
     private float progressVal;
 
     public GameObject countdownDisplay;
@@ -27,10 +26,8 @@ public class PlanModeController : MonoBehaviour
 
     void Awake()
     {
-        gameManager = gameManagerObject.GetComponent<GameManager>();
         countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
-        Debug.Log(countdownTimer);
-        Debug.Log(countdownDisplay);
+        planProgress = progress.GetComponent<PlanProgress>();
     }
 
     private void Update()
@@ -79,8 +76,6 @@ public class PlanModeController : MonoBehaviour
     private void SetUpProgressIndicator()
     {
         progress.SetActive(true);
-        progressIndicator = progress.transform.Find("Progress").GetComponent<Image>();
-        progressIndicator.fillAmount = 0.0f;
 
     }
 
@@ -95,7 +90,23 @@ public class PlanModeController : MonoBehaviour
     public void UpdateProgress(float progress)
     {
         progressVal = progress;
-        progressIndicator.fillAmount = progress;
+        if (progress < 0.34)
+        {
+            planProgress.SetStage1();
+        }
+
+        if ((progress > 0.34) && (progress < 0.67))
+        {
+            planProgress.SetStage1();
+            planProgress.SetStage2();
+        }
+
+        if (progress > 0.9)
+        {
+            planProgress.SetStage1();
+            planProgress.SetStage2();
+            planProgress.SetStage3();
+        }
     }
 
 }
