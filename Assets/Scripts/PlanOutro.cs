@@ -7,7 +7,6 @@ public class PlanOutro : MonoBehaviour
     private GameManager gameManager;
     public GameObject statsBox;
     private StatBuilder statBuilder;
-    public CanvasEffects canvasEffects;
 
     void Awake()
     {

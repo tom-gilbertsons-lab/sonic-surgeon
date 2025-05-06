@@ -27,10 +27,10 @@ public class GameManager : MonoBehaviour
     public int planTimeRemaining;
     public float planProgressVal;
 
-    //private int treatOnTarget;
-    //private int treatOffTarget;
-    //private float treatTimeRemaining;
-    //private float treatProgressVal;
+    public int treatOnTarget;
+    public int treatOffTarget;
+    public int treatTimeRemaining;
+    public float treatProgressVal;
 
 
     private void Awake()
@@ -41,7 +41,10 @@ public class GameManager : MonoBehaviour
 
 
     private void Start()
-    {
+    {   // Reset all transition UI screens
+        planSuccessScreen.SetActive(false);
+        planFailScreen.SetActive(false);
+        endGameScreen.SetActive(false);
         Debug.Log("In GameManager Start");
         planModeController.StartPlanModeIntro();
 
@@ -59,15 +62,25 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // Should cease (end of play; button presented to return to clinic). 
             ActivateAndFadeInUI(planFailScreen, 0.5f);
         }
     }
 
-    public void EndOfTreatMode()
+    public void EndTreatMode()
     {
-        Debug.Log("In GameManager, end of Treat Mode... WHAT NOW....");
+        GrabTreatStats();
+        StartCoroutine(EndGameTransition());
+
+
     }
+
+    private IEnumerator EndGameTransition()
+    {
+        ActivateAndFadeInUI(endGameScreen, 0.5f);
+        yield return new WaitForSeconds(1.0f);
+        treatModeController.DeactivateTreatMode();
+    }
+
 
     private IEnumerator PlanToTreatTransition()
     {

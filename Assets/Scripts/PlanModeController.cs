@@ -50,10 +50,8 @@ public class PlanModeController : MonoBehaviour
 
     public void StartPlanModeIntro()
     {
-        // get the backgrounds & initalise the scripts
         planModeIntroObj.SetActive(true);
         StartCoroutine(planModeIntro.RunFullIntro(StartPlanMode));
-        planMode.SetActive(true);
     }
 
 

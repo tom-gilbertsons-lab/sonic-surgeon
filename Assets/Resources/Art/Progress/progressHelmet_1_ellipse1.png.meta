@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      progressHelmet_1_ellipse1_0: -3938515831544489669
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

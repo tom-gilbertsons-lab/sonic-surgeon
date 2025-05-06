@@ -9,7 +9,6 @@ public class TreatModeController : MonoBehaviour
     private GameManager gameManager;
 
     // Canvas Objects
-    // Canvas Objects
     public GameObject treatModeIntroObj;
     private ModeIntro treatModeIntro;
 
@@ -64,16 +63,17 @@ public class TreatModeController : MonoBehaviour
     // this will go into stats at the end: 
     public void EndTreatMode()
     {
-        Debug.Log("Finished Treat:: ie Complete, do stuff, set off an 'end of plan mode' thing ");
-
         countdownTimer.CancelCountdown();
-        Debug.Log("You had " + timeRemaining.ToString() + "seconds left");
-        Debug.Log($"You completed {(int)(progressVal * 100f)} % of the treatment");
-        Debug.Log("You had " + onTargetTaps.ToString() + " and " + offTargetTaps.ToString() + "off target");
-
-        gameManager.EndOfTreatMode();
-
+        gameManager.EndTreatMode();
     }
+
+    public void DeactivateTreatMode()
+    {
+        treatMode.SetActive(false);
+        progress.SetActive(false);
+        countdownDisplay.SetActive(false);
+    }
+
 
     public void OnTargetTaps()
     {

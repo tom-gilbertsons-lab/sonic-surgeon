@@ -5,12 +5,12 @@
 
 **Educational game showcasing non invasive neurosurgery for movement disorders.**
 
-Magtreatment protocol for MRgFUS thalamotomy for essential tremor.
-Plan a treatment; and treat the patient.
+Plan and perform MRgFUS vim thalamotomy for essential tremor.
 
-Play on web but best paired with the wobbling table to simulate effects of tremor on
+Suitable for outreach events where players get 1-2 turns max (there are no difficulty levels and the game is easy to beat!)
+Play on web alone, but best paired with the [tremor table](/TremorTable) for o
 
-Suitable for outreach events where players get 1-2 goes max (the game doesn't have difficulty levels and is easy to beat!)
+
 
 <a  href="https://tom-gilbertsons-lab.github.io/patchLSD/"  target="_blank">Play Online</a> to play online*
 But much better to pair with a wobbling table as cotrolled via studd.
