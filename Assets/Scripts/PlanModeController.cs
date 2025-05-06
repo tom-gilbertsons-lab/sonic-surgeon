@@ -52,7 +52,6 @@ public class PlanModeController : MonoBehaviour
     {
         // get the backgrounds & initalise the scripts
         planModeIntroObj.SetActive(true);
-        gameManager.
         StartCoroutine(planModeIntro.RunFullIntro(StartPlanMode));
         planMode.SetActive(true);
     }

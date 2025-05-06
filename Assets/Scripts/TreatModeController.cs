@@ -49,13 +49,9 @@ public class TreatModeController : MonoBehaviour
 
     public void StartTreatModeIntro()
     {
-        // get the backgrounds & initalise the scripts
-        // disable the colliders
         treatModeIntroObj.SetActive(true);
-        treatMode.SetActive(true);
         StartCoroutine(treatModeIntro.RunFullIntro(StartTreatMode));
     }
-
 
     public void StartTreatMode()
     {
@@ -64,7 +60,6 @@ public class TreatModeController : MonoBehaviour
         Debug.Log("In TreatModeController StartTreatMode");
         treatModeIntroObj.SetActive(false);
     }
-
 
     // this will go into stats at the end: 
     public void EndTreatMode()
@@ -77,8 +72,6 @@ public class TreatModeController : MonoBehaviour
         Debug.Log("You had " + onTargetTaps.ToString() + " and " + offTargetTaps.ToString() + "off target");
 
         gameManager.EndOfTreatMode();
-
-        //gameManager.EndO
 
     }
 

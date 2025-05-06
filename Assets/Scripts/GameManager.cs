@@ -20,8 +20,6 @@ public class GameManager : MonoBehaviour
     public GameObject planSuccessScreen;
     public GameObject planFailScreen;
     public GameObject endGameScreen;
-    private PlanOutro planTransition;
-
 
     // Stats at the end: 
     public int planOnTarget;
@@ -39,7 +37,6 @@ public class GameManager : MonoBehaviour
     {
         planModeController = GetComponent<PlanModeController>();
         treatModeController = GetComponent<TreatModeController>();
-        planTransition = planSuccessScreen.GetComponent<PlanOutro>();
     }
 
 
