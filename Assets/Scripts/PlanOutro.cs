@@ -1,16 +1,24 @@
 using UnityEngine;
 
+
 public class PlanOutro : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public GameObject gameManagerObject;
+    private GameManager gameManager;
+    public GameObject statsBox;
+    private StatBuilder statBuilder;
+    public CanvasEffects canvasEffects;
+
+    void Awake()
     {
-        
+        statBuilder = statsBox.GetComponent<StatBuilder>();
+        gameManager = gameManagerObject.GetComponent<GameManager>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnEnable()
     {
-        
+        statsBox.SetActive(true);
+        statBuilder.SetPlanStats("Plan Report:", gameManager.planOnTarget, gameManager.planOffTarget, gameManager.planTimeRemaining, gameManager.planProgressVal);
     }
+
 }

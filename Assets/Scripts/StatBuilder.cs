@@ -11,26 +11,71 @@ public class StatBuilder : MonoBehaviour
     public TextMeshProUGUI timeRemainingTMP;
     public TextMeshProUGUI progressTMP;
 
+    public CanvasEffects canvasEffects;
+
     public Material greenMaterial;
+    public Material amberMaterial;
     public Material redMaterial;
 
-    public void SetStats(string title, int onTarget, int offTarget, float timeRemaining, float progressVal)
+    public void SetPlanStats(string title, int onTarget, int offTarget, int timeRemaining, float progressVal)
     {
-        // Set title (always same material)
+        // Set text values
         titleTMP.text = title;
 
-        // Update main stat lines
+
+
         onTargetHitTMP.text = $"On Target Hits:    {onTarget}";
+
+        if (onTarget >= 3)
+        {
+            onTargetHitTMP.fontSharedMaterial = greenMaterial;
+        }
+        else
+        {
+            onTargetHitTMP.fontSharedMaterial = redMaterial;
+        }
+
+
         offTargetHitTMP.text = $"Off Target Hits:   {offTarget}";
-        timeRemainingTMP.text = $"Time Remaining:    {timeRemaining:F1}s";
-        progressTMP.text = $"Progress:          {(progressVal * 100f):F0}%";
+        if (offTarget >= 15)
+        {
+            onTargetHitTMP.fontSharedMaterial = redMaterial;
+        }
+        else if (offTarget >= 12)
+        {
+            onTargetHitTMP.fontSharedMaterial = amberMaterial;
+        }
+        else
+        {
+            onTargetHitTMP.fontSharedMaterial = greenMaterial;
+        }
 
-        //// Logic for colour/material
-        //Material mat = (progressVal < 1f || onTarget == 0) ? redAlertMaterial : normalMaterial;
 
-        //onTargetHitTMP.fontSharedMaterial = mat;
-        //offTargetHitTMP.fontSharedMaterial = mat;
-        //timeRemainingTMP.fontSharedMaterial = mat;
-        //progressTMP.fontSharedMaterial = mat;
+        timeRemainingTMP.text = $"Time Remaining:    {timeRemaining}s";
+
+        if (timeRemaining >= 15)
+        {
+            timeRemainingTMP.fontSharedMaterial = greenMaterial;
+        }
+        else if (timeRemaining > 0)
+        {
+            timeRemainingTMP.fontSharedMaterial = amberMaterial;
+        }
+        else
+        {
+            timeRemainingTMP.fontSharedMaterial = redMaterial;
+        }
+
+        progressTMP.text = $"Progress:         {progressVal * 100f:F0}%";
+
+        if (progressVal >= 0.999)
+        {
+            progressTMP.fontSharedMaterial = greenMaterial;
+        }
+        else
+        {
+            progressTMP.fontSharedMaterial = redMaterial;
+        }
+
     }
 }

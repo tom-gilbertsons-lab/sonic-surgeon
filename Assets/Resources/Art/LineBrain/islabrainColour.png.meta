@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      islabrainColour_0: -4816577201082724405
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

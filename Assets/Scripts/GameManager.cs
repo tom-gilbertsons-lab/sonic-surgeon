@@ -10,123 +10,113 @@ public class GameManager : MonoBehaviour
 
     // Canvas Objects 
     public GameObject startScreen;
+    public CanvasEffects canvasEffects;
 
     // Mode Controllers 
     private PlanModeController planModeController;
     private TreatModeController treatModeController;
 
-
-
-    // Transition Elper Script: move o PCS when I'm ready 
-    public GameObject planCompleteScreen;
-    public Image planCompleteBackground;
-    public TextMeshProUGUI planCompleteText;
-    public CanvasEffects canvasEffects;
-
-    public GameObject statsBox;
-    public StatBuilder statBuilder;
+    // Transition Objects 
+    public GameObject planSuccessScreen;
+    public GameObject planFailScreen;
+    public GameObject endGameScreen;
+    private PlanOutro planTransition;
 
 
     // Stats at the end: 
-    private int planOnTarget;
-    private int planOffTarget;
-    private float planTimeRemaining;
-    private float planProgressVal;
+    public int planOnTarget;
+    public int planOffTarget;
+    public int planTimeRemaining;
+    public float planProgressVal;
 
-    private int treatOnTarget;
-    private int treatOffTarget;
-    private float treatTimeRemaining;
-    private float treatProgressVal;
+    //private int treatOnTarget;
+    //private int treatOffTarget;
+    //private float treatTimeRemaining;
+    //private float treatProgressVal;
 
 
     private void Awake()
     {
         planModeController = GetComponent<PlanModeController>();
         treatModeController = GetComponent<TreatModeController>();
-
+        planTransition = planSuccessScreen.GetComponent<PlanOutro>();
     }
 
 
     private void Start()
     {
-        //RunStartScreen();
         Debug.Log("In GameManager Start");
-
-
-
-
-        planModeController.StartPlanModeIntro(); // works 
-        //treatModeController.StartTreatModeIntro(); // works 
+        planModeController.StartPlanModeIntro();
 
     }
 
-    // we will pull in complete time, n taps on target, off target in both of these 
-    // for a final summary I think
-
-    public void EndOfPlanMode()
+    public void EndPlanMode()
     {
         Debug.Log("In GameManager, end of Plan Mode");
 
+        GrabPlanStats();
+
         if (planModeController.planModeComplete)
         {
-            Debug.Log("Show Congratulations Screen + button continue to treat");
-            StartCoroutine(ShowPlanCompleteScreen());
+            StartCoroutine(PlanToTreatTransition());
         }
         else
         {
-            Debug.Log("Show Planning Failed- return to medical school");
+            // Should cease (end of play; button presented to return to clinic). 
+            ActivateAndFadeInUI(planFailScreen, 0.5f);
         }
     }
 
     public void EndOfTreatMode()
     {
-        Debug.Log("In GameManager, end of Treat Mode");
+        Debug.Log("In GameManager, end of Treat Mode... WHAT NOW....");
     }
 
-    private IEnumerator ShowPlanCompleteScreen()
+    private IEnumerator PlanToTreatTransition()
     {
-        planCompleteScreen.SetActive(true);
-
-        // Set initial alpha
-        var bgCol = planCompleteBackground.color;
-        bgCol.a = 0;
-        planCompleteBackground.color = bgCol;
-
-        var txtCol = planCompleteText.color;
-        txtCol.a = 0;
-        planCompleteText.color = txtCol;
-
-        // Fade in background and text
-        yield return StartCoroutine(canvasEffects.FadeImage(planCompleteBackground, 0f, 1f, 1.5f));
+        ActivateAndFadeInUI(planSuccessScreen, 0.5f);
+        yield return new WaitForSeconds(1.0f);
         planModeController.DeactivatePlanMode();
-        yield return StartCoroutine(canvasEffects.FadeText(planCompleteText, 0f, 1f, 2f));
-
-        yield return new WaitForSeconds(10f);
-
-        planCompleteScreen.SetActive(false);
+        yield return new WaitForSeconds(3f);
+        FadeOutAndDeactivateUI(planSuccessScreen, 0.5f);
         treatModeController.StartTreatModeIntro();
     }
 
-
-
-
     // Utils
+
+    public void ActivateAndFadeInUI(GameObject obj, float duration)
+    {
+        obj.SetActive(true);
+        CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+        StartCoroutine(canvasEffects.FadeCanvasGroup(cg, 0f, 1f, duration));
+    }
+
+    public void FadeOutAndDeactivateUI(GameObject obj, float duration)
+    {
+        CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+        StartCoroutine(canvasEffects.FadeOutCanvasGroup(cg, duration, true));
+    }
+
+    private void GrabPlanStats()
+    {
+        planOnTarget = planModeController.onTargetTaps;
+        planOffTarget = planModeController.offTargetTaps;
+        planTimeRemaining = planModeController.timeRemaining;
+        planProgressVal = planModeController.progressVal;
+    }
+
+    private void GrabTreatStats()
+    {
+        planOnTarget = treatModeController.onTargetTaps;
+        planOffTarget = treatModeController.offTargetTaps;
+        planTimeRemaining = treatModeController.timeRemaining;
+        planProgressVal = treatModeController.progressVal;
+    }
 
     public void EndSession()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-
-
-    public void EnableAllColliders(GameObject gameObject, bool enable)
-    {
-        BoxCollider2D[] colliders = gameObject.GetComponentsInChildren<BoxCollider2D>(includeInactive: true);
-        foreach (var col in colliders)
-        {
-            col.enabled = enable;
-        }
-    }
-
 
     //rPI
 
@@ -154,9 +144,6 @@ public class GameManager : MonoBehaviour
         yield return request.SendWebRequest();
         // Optional: Add error checking here if needed
     }
-
-
-
 
 
 }

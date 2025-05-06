@@ -53,14 +53,12 @@ public class TreatModeController : MonoBehaviour
         // disable the colliders
         treatModeIntroObj.SetActive(true);
         treatMode.SetActive(true);
-        gameManager.EnableAllColliders(treatMode, false);
         StartCoroutine(treatModeIntro.RunFullIntro(StartTreatMode));
     }
 
 
     public void StartTreatMode()
     {
-        gameManager.EnableAllColliders(treatMode, true);
         SetUpProgressIndicator();
         SetUpCountdownIndicator();
         Debug.Log("In TreatModeController StartTreatMode");

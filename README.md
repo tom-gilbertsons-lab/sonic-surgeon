@@ -6,7 +6,9 @@
 **Educational game showcasing non invasive neurosurgery for movement disorders.**
 
 Magtreatment protocol for MRgFUS thalamotomy for essential tremor.
-Plan a treatment; and treat the target.
+Plan a treatment; and treat the patient.
+
+Play on web but best paired with the wobbling table to simulate effects of tremor on
 
 Suitable for outreach events where players get 1-2 goes max (the game doesn't have difficulty levels and is easy to beat!)
 

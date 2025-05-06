@@ -47,8 +47,6 @@ public class TreatMode : MonoBehaviour
         {
             totalSubNuclei++;
         }
-        Debug.Log("totalSubNuclei)" + totalSubNuclei.ToString());
-
         treatModeController = gameManagerObject.GetComponent<TreatModeController>();
     }
 

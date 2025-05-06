@@ -52,33 +52,23 @@ public class PlanModeController : MonoBehaviour
     {
         // get the backgrounds & initalise the scripts
         planModeIntroObj.SetActive(true);
-        planMode.SetActive(true);
-        gameManager.EnableAllColliders(planMode, false);
+        gameManager.
         StartCoroutine(planModeIntro.RunFullIntro(StartPlanMode));
-
+        planMode.SetActive(true);
     }
 
 
     public void StartPlanMode()
     {
-        gameManager.EnableAllColliders(planMode, true);
         SetUpProgressIndicator();
         SetUpCountdownIndicator();
-        Debug.Log("In PlanModeController StartPlanMode");
-        planMode.SetActive(true); // when this is active it activates the scripts in PlanMode
         planModeIntroObj.SetActive(false);
     }
 
 
     public void EndPlanMode()
     {
-
-        Debug.Log("Finished Plan ");
         countdownTimer.CancelCountdown();
-        Debug.Log("You had " + timeRemaining.ToString() + "seconds left");
-        Debug.Log($"You completed {(int)(progressVal * 100f)} % of the plan");
-
-        Debug.Log("You had " + onTargetTaps.ToString() + " and " + offTargetTaps.ToString() + "off target");
 
         if (onTargetTaps >= 3)
         {
@@ -88,10 +78,7 @@ public class PlanModeController : MonoBehaviour
         {
             planModeComplete = false;
         }
-
-
-        gameManager.EndOfPlanMode();
-
+        gameManager.EndPlanMode();
 
     }
 
@@ -101,7 +88,6 @@ public class PlanModeController : MonoBehaviour
         progress.SetActive(false);
         countdownDisplay.SetActive(false);
     }
-
 
 
     public void UpdateTapStats(int onTarget, int offTarget)

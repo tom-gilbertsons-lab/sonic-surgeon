@@ -13,7 +13,7 @@ public class PromptCountdown : MonoBehaviour
 
     public IEnumerator PromptOpener()
     {
-        string[] countdown = { "3", "2", "1", "GO!" };
+        string[] countdown = { "3", "2", "1", "Go!" };
         foreach (string step in countdown)
         {
             yield return StartCoroutine(AnimatePrompt(step));
@@ -25,7 +25,7 @@ public class PromptCountdown : MonoBehaviour
     {
         tmp.text = text;
         tmp.transform.localScale = Vector3.zero;
-        tmp.color = new Color(1f, 1f, 1f, 1f); // fully opaque, no bloom weirdness
+        tmp.color = new Color(1f, 1f, 1f, 1f); // fully opaque
 
         float duration = 0.3f;
         float t = 0f;
