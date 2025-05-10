@@ -5,6 +5,7 @@ using TMPro;
 public class PromptCountdown : MonoBehaviour
 {
     private TextMeshProUGUI tmp;
+    public Material promptMat;
 
     private void Awake()
     {
@@ -23,14 +24,18 @@ public class PromptCountdown : MonoBehaviour
 
     private IEnumerator AnimatePrompt(string text)
     {
+        // Use colour from the material
+        Color baseColor = promptMat.GetColor("_FaceColor");
+        baseColor.a = 1f;
+
         tmp.text = text;
         tmp.transform.localScale = Vector3.zero;
-        tmp.color = new Color(1f, 1f, 1f, 1f); // fully opaque
+        tmp.color = baseColor;
 
         float duration = 0.3f;
         float t = 0f;
 
-        // Scale up
+        // Smooth scale-up
         while (t < duration)
         {
             t += Time.deltaTime;
@@ -39,23 +44,23 @@ public class PromptCountdown : MonoBehaviour
             yield return null;
         }
 
-        // Hold big text
         yield return new WaitForSeconds(0.3f);
 
-        // Fade out
+        // Fade out using colour alpha (no material edits)
         t = 0f;
         duration = 0.5f;
-        Color startColor = tmp.color;
 
         while (t < duration)
         {
             t += Time.deltaTime;
             float alpha = Mathf.Lerp(1f, 0f, t / duration);
-            tmp.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+            tmp.color = new Color(baseColor.r, baseColor.g, baseColor.b, alpha);
             yield return null;
         }
 
         tmp.text = "";
-        tmp.transform.localScale = Vector3.one; // reset scale
+        tmp.transform.localScale = Vector3.one;
     }
+
+
 }

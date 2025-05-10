@@ -16,10 +16,7 @@ public class PlanMode : MonoBehaviour
     public GameObject round3;
     public GameObject targetRound3;
 
-    private SpriteRenderer targetIndicator1;
-    private SpriteRenderer targetIndicator2;
-    private SpriteRenderer targetIndicator3;
-
+    public GameObject planComplete;
 
 
     public int onTargetHitCount = 0;
@@ -30,10 +27,6 @@ public class PlanMode : MonoBehaviour
     void Start()
     {
         planModeController = gameManagerObject.GetComponent<PlanModeController>();
-
-        targetIndicator1 = targetRound1.GetComponent<SpriteRenderer>();
-        targetIndicator2 = targetRound2.GetComponent<SpriteRenderer>();
-        targetIndicator3 = targetRound3.GetComponent<SpriteRenderer>();
         StartRound1();
 
     }
@@ -45,22 +38,40 @@ public class PlanMode : MonoBehaviour
 
         if (onTargetHitCount == 1)
         {
-            targetIndicator1.color = new Color(treatGreen.r, treatGreen.g, treatGreen.b, 0.05f);
+            targetRound1.SetActive(true);
             planModeController.UpdateProgress(0.33f);
             StartRound2();
         }
         else if (onTargetHitCount == 2)
         {
-            targetIndicator2.color = new Color(treatGreen.r, treatGreen.g, treatGreen.b, 0.1f);
+            targetRound2.SetActive(true);
             planModeController.UpdateProgress(0.66f);
             StartRound3();
         }
         else if (onTargetHitCount >= 3)
         {
-            targetIndicator3.color = new Color(treatGreen.r, treatGreen.g, treatGreen.b, 1.0f);
+            targetRound3.SetActive(true);
+
             planModeController.UpdateProgress(1f);
-            StartCoroutine(EndPlanMode());
+            planModeController.StopCountdown();
+            StartCoroutine(PlanModeSuccess());
         }
+    }
+
+    private IEnumerator PlanModeSuccess()
+    {
+        Debug.Log("Plan Mode Success- send flag to stop countdown immediately ");
+        DeactivateAllRounds();
+        yield return new WaitForSeconds(1.0f);
+        targetRound1.SetActive(false);
+        targetRound2.SetActive(false);
+        Debug.Log("Do a little display thing like update pogress brightlys");
+
+        planModeController.HideCountdownAndProgress();
+        planComplete.SetActive(true);
+        yield return new WaitForSeconds(1.3f);
+        planModeController.EndPlanMode();
+
     }
 
     public void ReportTapsToController()
@@ -90,11 +101,12 @@ public class PlanMode : MonoBehaviour
         round2.SetActive(false);
     }
 
-    private IEnumerator EndPlanMode()
+    private void DeactivateAllRounds()
     {
-        Debug.Log("Finished Plan Mode, Do Stuff pass back to PMC ");
-        yield return new WaitForSeconds(1.0f);
-        planModeController.EndPlanMode();
-
+        round1.SetActive(false);
+        round2.SetActive(false);
+        round3.SetActive(false);
     }
+
+
 }

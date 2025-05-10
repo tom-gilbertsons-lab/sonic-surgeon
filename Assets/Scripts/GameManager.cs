@@ -42,11 +42,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {   // Reset all transition UI screens
-        planSuccessScreen.SetActive(false);
-        planFailScreen.SetActive(false);
-        endGameScreen.SetActive(false);
-        Debug.Log("In GameManager Start");
-        planModeController.StartPlanModeIntro();
+        //planSuccessScreen.SetActive(false);
+        //planFailScreen.SetActive(false);
+        //endGameScreen.SetActive(false);
+        //Debug.Log("In GameManager Start");
+        planModeController.StartPlanMode();
+        //startScreen.SetActive(true);
+        //treatModeController.StartTreatMode();
 
     }
 

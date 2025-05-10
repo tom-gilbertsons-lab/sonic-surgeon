@@ -7,6 +7,7 @@ public class ModeIntro : MonoBehaviour
     public GameObject sceneObjectBeingPrompted;
     [Header("Prompt + Effects")]
     public GameObject promptObject;
+    public Material modePromptMaterial;
     public CanvasEffects canvasEffects;
 
     [Header("UI Text Fields")]
@@ -18,7 +19,7 @@ public class ModeIntro : MonoBehaviour
 
     [Header("Timing")]
     public float fadeDuration = 0.5f;
-    public float letterDelay = 0.08f;
+    public float letterDelay = 0.05f;
 
     private CanvasGroup cg;
     private string titleTextStr;
@@ -68,6 +69,7 @@ public class ModeIntro : MonoBehaviour
         yield return StartCoroutine(canvasEffects.FadeCanvasGroup(cg, 1f, 0f, fadeDuration));
 
         promptObject.SetActive(true);
+        promptObject.GetComponent<PromptCountdown>().promptMat = modePromptMaterial;
         yield return StartCoroutine(promptObject.GetComponent<PromptCountdown>().PromptOpener());
         promptObject.SetActive(false);
         EnableAllColliders(sceneObjectBeingPrompted, true);

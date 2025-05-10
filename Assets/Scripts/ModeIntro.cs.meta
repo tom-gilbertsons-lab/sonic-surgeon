@@ -1,2 +1,20 @@
 fileFormatVersion: 2
 guid: 86b30b1ebe44d46eabacac42e0917169
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - sceneObjectBeingPrompted: {instanceID: 0}
+  - promptObject: {instanceID: 0}
+  - modePromptMaterial1: {fileID: -306146972900983633, guid: cdadf146c4dcd4ac2a34bbe05c7dcd13, type: 2}
+  - modePromptMaterial2: {instanceID: 0}
+  - canvasEffects: {instanceID: 0}
+  - titleText: {instanceID: 0}
+  - message1: {instanceID: 0}
+  - message2: {instanceID: 0}
+  - message3: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

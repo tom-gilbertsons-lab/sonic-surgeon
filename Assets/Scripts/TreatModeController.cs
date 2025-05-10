@@ -54,6 +54,11 @@ public class TreatModeController : MonoBehaviour
 
     public void StartTreatMode()
     {
+        if (!treatMode.activeSelf)
+        {
+            treatMode.SetActive(true);
+        }
+
         SetUpProgressIndicator();
         SetUpCountdownIndicator();
         Debug.Log("In TreatModeController StartTreatMode");

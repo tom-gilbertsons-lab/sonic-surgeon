@@ -9,9 +9,16 @@ public class PlanModeController : MonoBehaviour
     public GameObject gameManagerObject;
     private GameManager gameManager;
 
+    //public void FadeOutAndDeactivateUI(GameObject obj, float duration)
+    //{
+    //    CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+    //    StartCoroutine(canvasEffects.FadeOutCanvasGroup(cg, duration, true));
+    //}
+
     // Canvas Objects
     public GameObject planModeIntroObj;
     private ModeIntro planModeIntro;
+    public CanvasEffects canvasEffects;
 
     public GameObject progress;
     private PlanProgress planProgress;
@@ -57,15 +64,21 @@ public class PlanModeController : MonoBehaviour
 
     public void StartPlanMode()
     {
+        if (!planMode.activeSelf)
+        {
+            planMode.SetActive(true);
+        }
+
         SetUpProgressIndicator();
         SetUpCountdownIndicator();
         planModeIntroObj.SetActive(false);
     }
 
 
+
+
     public void EndPlanMode()
     {
-        countdownTimer.CancelCountdown();
 
         if (onTargetTaps >= 3)
         {
@@ -82,9 +95,19 @@ public class PlanModeController : MonoBehaviour
     public void DeactivatePlanMode()
     {
         planMode.SetActive(false);
-        progress.SetActive(false);
-        countdownDisplay.SetActive(false);
     }
+
+    public void StopCountdown()
+    {
+        countdownTimer.CancelCountdown();
+    }
+
+    public void HideCountdownAndProgress()
+    {
+        gameManager.FadeOutAndDeactivateUI(countdownDisplay, 0.5f);
+        gameManager.FadeOutAndDeactivateUI(progress, 0.5f);
+    }
+
 
 
     public void UpdateTapStats(int onTarget, int offTarget)

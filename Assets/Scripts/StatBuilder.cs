@@ -86,6 +86,9 @@ public class StatBuilder : MonoBehaviour
         titleTMP.text = title;
 
 
+        Debug.Log("In Treat Stats");
+
+
 
         onTargetHitTMP.text = $"On Target Hits:    {onTarget}";
 
