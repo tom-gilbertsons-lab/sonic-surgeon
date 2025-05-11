@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class TreatMode : MonoBehaviour
@@ -11,6 +12,8 @@ public class TreatMode : MonoBehaviour
     public GameObject target;
     public float delayBeforeFade = 0.7f;
     public float fadeDuration = 0.5f;
+    public Material treatCompleteMaterial;
+    public GameObject treatCompleteVim;
 
     [ColorUsage(true, true)]
     public Color[] doseColours = new Color[] {
@@ -38,10 +41,13 @@ public class TreatMode : MonoBehaviour
     public float proportionTreated = 0f;
     public bool treatmentComplete = false;
 
+    private SceneEffects sceneEffects;
+
 
 
     private void Awake()
     {
+        sceneEffects = GetComponent<SceneEffects>();
         // counting the sub nuclei 
         foreach (Transform child in target.transform)
         {
@@ -106,13 +112,86 @@ public class TreatMode : MonoBehaviour
         if (treatedSubNuclei == totalSubNuclei)
         {
             treatmentComplete = true;
-            treatModeController.EndTreatMode();
-
+            treatModeController.StopCountdown();
+            StartCoroutine(TreatModeSuccess());
         }
 
     }
 
+    private IEnumerator TreatModeSuccess()
+    {
+        Debug.Log("In treatMode success");
+        DisableTreatCollider();
+        yield return new WaitForSeconds(1.0f);
+        treatModeController.HideCountdownAndProgress();
 
+        yield return StartCoroutine(TreatCompleteSequence());
+
+        yield return StartCoroutine(sceneEffects.FadeOutSceneThen(1.0f, () =>
+        {
+            treatModeController.EndTreatMode();
+        }));
+
+    }
+
+
+    private IEnumerator TreatCompleteSequence()
+    {
+        foreach (Transform child in target.transform)
+        {
+
+            SpriteRenderer sr = child.GetComponent<SpriteRenderer>();
+
+            sr.material = new Material(treatCompleteMaterial);
+            float dapple = Random.Range(0.1f, 0.4f);
+
+            yield return new WaitForSeconds(dapple); // delay between each
+        }
+
+        yield return new WaitForSeconds(0.3f);
+
+        SpriteRenderer vimSR = target.GetComponent<SpriteRenderer>();
+        vimSR.enabled = true;
+        Material mat = vimSR.material;
+
+        // Phase 1: pulse 0.3 → 1 → 0.3 twice
+        //for (int i = 0; i < 2; i++)
+        //{
+        yield return StartCoroutine(PulseGlow(mat, 0.3f, 1f, 1f));
+        yield return StartCoroutine(PulseGlow(mat, 1f, 0.3f, 1f));
+        // }
+
+        // Phase 2: ramp to 3
+        yield return StartCoroutine(PulseGlow(mat, 0.3f, 3f, 1f));
+
+        // Phase 3: fade to 0
+        //yield return StartCoroutine(PulseGlow(mat, 3f, 0f, 1f));
+    }
+
+
+    private IEnumerator PulseGlow(Material mat, float from, float to, float dur)
+    {
+        float t = 0f;
+        while (t < dur)
+        {
+            t += Time.deltaTime;
+            float val = Mathf.Lerp(from, to, t / dur);
+            mat.SetFloat("_GlowStrength", val);
+            yield return null;
+        }
+        mat.SetFloat("_GlowStrength", to);
+    }
+
+
+
+
+
+
+    private void DisableTreatCollider()
+    {
+        BoxCollider2D treatCollider = GetComponent<BoxCollider2D>();
+        treatCollider.enabled = false;
+    }
 
     private void SpawnVFX()
     {

@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     public float treatProgressVal;
 
 
+
     private void Awake()
     {
         planModeController = GetComponent<PlanModeController>();
@@ -70,6 +71,7 @@ public class GameManager : MonoBehaviour
 
     public void EndTreatMode()
     {
+        Debug.Log("back in GameManager post treat");
         GrabTreatStats();
         StartCoroutine(EndGameTransition());
 
@@ -78,15 +80,16 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator EndGameTransition()
     {
-        ActivateAndFadeInUI(endGameScreen, 0.5f);
-        yield return new WaitForSeconds(1.0f);
+        ActivateAndFadeInUI(endGameScreen, 1.0f);
         treatModeController.DeactivateTreatMode();
+        yield return new WaitForSeconds(1.0f);
+
     }
 
 
     private IEnumerator PlanToTreatTransition()
     {
-        ActivateAndFadeInUI(planSuccessScreen, 0.5f);
+        ActivateAndFadeInUI(planSuccessScreen, 1.0f);
         yield return new WaitForSeconds(1.0f);
         planModeController.DeactivatePlanMode();
         yield return new WaitForSeconds(3f);
@@ -159,4 +162,59 @@ public class GameManager : MonoBehaviour
 
 
 }
+
+//using System;
+//using System.Collections;
+//using System.Collections.Generic;
+//using UnityEngine;
+
+//public class GameManager : MonoBehaviour
+//{
+//    public float fadeDuration = 1.0f;
+
+//    public void FadeOutSceneThen(Action onDone)
+//    {
+//        StartCoroutine(FadeOutAllSpriteRenderersThen(onDone));
+//    }
+
+//    private IEnumerator FadeOutAllSpriteRenderersThen(Action onDone)
+//    {
+//        SpriteRenderer[] allSRs = GetComponentsInChildren<SpriteRenderer>(true);
+//        List<Material> mats = new List<Material>();
+
+//        foreach (var sr in allSRs)
+//        {
+//            if (sr.material.HasProperty("_Color"))
+//            {
+//                sr.material = new Material(sr.material); // duplicate so we don't affect shared
+//                mats.Add(sr.material);
+//            }
+//        }
+
+//        float t = 0f;
+//        while (t < fadeDuration)
+//        {
+//            t += Time.deltaTime;
+//            float alpha = Mathf.Lerp(1f, 0f, t / fadeDuration);
+//            foreach (var mat in mats)
+//            {
+//                Color c = mat.color;
+//                c.a = alpha;
+//                mat.color = c;
+//            }
+//            yield return null;
+//        }
+
+//        // Final clamp
+//        foreach (var mat in mats)
+//        {
+//            Color c = mat.color;
+//            c.a = 0f;
+//            mat.color = c;
+//        }
+
+//        onDone?.Invoke();
+//    }
+//}
+
 

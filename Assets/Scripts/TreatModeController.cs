@@ -68,7 +68,6 @@ public class TreatModeController : MonoBehaviour
     // this will go into stats at the end: 
     public void EndTreatMode()
     {
-        countdownTimer.CancelCountdown();
         gameManager.EndTreatMode();
     }
 
@@ -79,6 +78,16 @@ public class TreatModeController : MonoBehaviour
         countdownDisplay.SetActive(false);
     }
 
+    public void StopCountdown()
+    {
+        countdownTimer.CancelCountdown();
+    }
+
+    public void HideCountdownAndProgress()
+    {
+        gameManager.FadeOutAndDeactivateUI(countdownDisplay, 0.5f);
+        gameManager.FadeOutAndDeactivateUI(progress, 0.5f);
+    }
 
     public void OnTargetTaps()
     {

@@ -7,6 +7,7 @@ public class PlanMode : MonoBehaviour
     public GameObject gameManagerObject;
     private PlanModeController planModeController;
 
+
     public Color treatGreen = new Color(0f, 1f, 0f, 0f);
 
     public GameObject round1;
@@ -21,6 +22,15 @@ public class PlanMode : MonoBehaviour
 
     public int onTargetHitCount = 0;
     public int offTargetTaps = 0;
+
+    private SceneEffects sceneEffects;
+
+
+
+    private void Awake()
+    {
+        sceneEffects = GetComponent<SceneEffects>();
+    }
 
 
 
@@ -60,19 +70,23 @@ public class PlanMode : MonoBehaviour
 
     private IEnumerator PlanModeSuccess()
     {
-        Debug.Log("Plan Mode Success- send flag to stop countdown immediately ");
         DeactivateAllRounds();
         yield return new WaitForSeconds(1.0f);
         targetRound1.SetActive(false);
         targetRound2.SetActive(false);
-        Debug.Log("Do a little display thing like update pogress brightlys");
-
         planModeController.HideCountdownAndProgress();
         planComplete.SetActive(true);
         yield return new WaitForSeconds(1.3f);
-        planModeController.EndPlanMode();
+
+        yield return StartCoroutine(sceneEffects.FadeOutSceneThen(1.0f, () =>
+        {
+            planModeController.EndPlanMode();
+        }));
+        // planModeController.EndPlanMode();
 
     }
+
+
 
     public void ReportTapsToController()
     {

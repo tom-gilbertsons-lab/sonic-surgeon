@@ -79,7 +79,6 @@ public class PlanModeController : MonoBehaviour
 
     public void EndPlanMode()
     {
-
         if (onTargetTaps >= 3)
         {
             planModeComplete = true;
@@ -88,6 +87,7 @@ public class PlanModeController : MonoBehaviour
         {
             planModeComplete = false;
         }
+
         gameManager.EndPlanMode();
 
     }
