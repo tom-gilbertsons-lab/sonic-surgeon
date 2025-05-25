@@ -31,12 +31,13 @@ public class GameOutro : MonoBehaviour
     public void OnEnable()
     {
         progress = gameManager.treatProgressVal;
+        Debug.Log("Progress " + progress.ToString());
         // build the stats boxes
         statsBoxLeft.SetActive(true);
         statBuilderL.SetPlanStats("Plan Report:", gameManager.planOnTarget, gameManager.planOffTarget, gameManager.planTimeRemaining, gameManager.planProgressVal);
 
         statsBoxRight.SetActive(true);
-        statBuilderR.SetTreatStats("Plan Report:", gameManager.treatOnTarget, gameManager.treatOffTarget, gameManager.treatTimeRemaining, gameManager.treatProgressVal);
+        statBuilderR.SetTreatStats("Operation Note:", gameManager.treatOnTarget, gameManager.treatOffTarget, gameManager.treatTimeRemaining, gameManager.treatProgressVal);
 
         if (gameManager.treatProgressVal > 0.99)
         {

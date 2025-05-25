@@ -41,11 +41,11 @@ public class StatBuilder : MonoBehaviour
         {
             onTargetHitTMP.fontSharedMaterial = redMaterial;
         }
-        else if (offTarget >= 12)
+        else if (offTarget >= 8)
         {
             onTargetHitTMP.fontSharedMaterial = amberMaterial;
         }
-        else
+        else if (offTarget == 0)
         {
             onTargetHitTMP.fontSharedMaterial = greenMaterial;
         }
@@ -111,7 +111,7 @@ public class StatBuilder : MonoBehaviour
         {
             onTargetHitTMP.fontSharedMaterial = amberMaterial;
         }
-        else
+        else if (offTarget == 0)
         {
             onTargetHitTMP.fontSharedMaterial = greenMaterial;
         }

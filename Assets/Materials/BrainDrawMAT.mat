@@ -69,7 +69,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnableExternalAlpha: 0
-    - _GlowStrength: 2.2
+    - _GlowStrength: 1.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SampleGI: 0
@@ -82,7 +82,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _GlowColour: {r: 0.1454, g: 0.106991746, b: 0.9094299, a: 0.5529412}
+    - _GlowColour: {r: 0.568541, g: 1.1479113, b: 1.1479113, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

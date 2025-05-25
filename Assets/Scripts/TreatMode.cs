@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
+
 
 public class TreatMode : MonoBehaviour
 {
@@ -100,10 +102,12 @@ public class TreatMode : MonoBehaviour
 
         if (hitAnyTarget)
         {
+            Debug.Log("On target");
             treatModeController.OnTargetTaps();
         }
         else
         {
+            Debug.Log("Off target");
             treatModeController.OffTargetTaps();
         }
 
@@ -122,6 +126,7 @@ public class TreatMode : MonoBehaviour
     {
         Debug.Log("In treatMode success");
         DisableTreatCollider();
+
         yield return new WaitForSeconds(1.0f);
         treatModeController.HideCountdownAndProgress();
 
@@ -133,7 +138,6 @@ public class TreatMode : MonoBehaviour
         }));
 
     }
-
 
     private IEnumerator TreatCompleteSequence()
     {
@@ -167,6 +171,7 @@ public class TreatMode : MonoBehaviour
         // Phase 3: fade to 0
         //yield return StartCoroutine(PulseGlow(mat, 3f, 0f, 1f));
     }
+
 
 
     private IEnumerator PulseGlow(Material mat, float from, float to, float dur)

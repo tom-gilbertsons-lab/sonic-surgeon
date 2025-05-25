@@ -1,12 +1,16 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.Networking;
+
 
 public class TreatModeController : MonoBehaviour
 {
     // Game Mananger Objects 
     public GameObject gameManagerObject;
     private GameManager gameManager;
+    private LANMotorCtrl lANMotorCtrl;
 
     // Canvas Objects
     public GameObject treatModeIntroObj;
@@ -26,6 +30,7 @@ public class TreatModeController : MonoBehaviour
     public int onTargetTaps = 0;
     public int offTargetTaps = 0;
 
+    private float lastShakeLevel = -1f;
 
 
     void Awake()
@@ -34,11 +39,14 @@ public class TreatModeController : MonoBehaviour
         countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
         treatProgress = progress.GetComponent<TreatProgress>();
         treatModeIntro = treatModeIntroObj.GetComponent<ModeIntro>();
+        lANMotorCtrl = gameManagerObject.GetComponent<LANMotorCtrl>();
     }
 
     private void Update()
     {
         timeRemaining = countdownTimer.timeRemaining;
+
+
         if (countdownTimer != null && countdownTimer.complete)
         {
             countdownTimer.CancelCountdown();
@@ -46,10 +54,12 @@ public class TreatModeController : MonoBehaviour
         }
     }
 
+
     public void StartTreatModeIntro()
     {
         treatModeIntroObj.SetActive(true);
         StartCoroutine(treatModeIntro.RunFullIntro(StartTreatMode));
+        lANMotorCtrl.StartShake();
     }
 
     public void StartTreatMode()
@@ -63,6 +73,7 @@ public class TreatModeController : MonoBehaviour
         SetUpCountdownIndicator();
         Debug.Log("In TreatModeController StartTreatMode");
         treatModeIntroObj.SetActive(false);
+
     }
 
     // this will go into stats at the end: 
@@ -92,11 +103,13 @@ public class TreatModeController : MonoBehaviour
     public void OnTargetTaps()
     {
         onTargetTaps++;
+        Debug.Log(onTargetTaps.ToString());
     }
 
     public void OffTargetTaps()
     {
         offTargetTaps++;
+        Debug.Log(offTargetTaps.ToString());
     }
 
     // Canvas Overlay Methods 
@@ -114,8 +127,26 @@ public class TreatModeController : MonoBehaviour
     public void UpdateProgress(float progress, int dosesDelivered)
     {
         progressVal = progress;
+        Debug.Log(progressVal.ToString());
         treatProgress.ShowProgress(dosesDelivered);
+
+
+        if (progressVal > 0.99f && lastShakeLevel != 0)
+        {
+            lANMotorCtrl.StopShake();
+            lastShakeLevel = 0;
+        }
+        else if (progressVal > 0.5f && progressVal <= 0.99f && lastShakeLevel != 1)
+        {
+            lANMotorCtrl.ShakeLo();
+            lastShakeLevel = 1;
+        }
+        else if (progressVal <= 0.5f && lastShakeLevel != 2)
+        {
+            lANMotorCtrl.ShakeMid();
+            lastShakeLevel = 2;
+        }
     }
-
-
 }
+
+

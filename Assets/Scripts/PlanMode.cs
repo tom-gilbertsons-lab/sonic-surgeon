@@ -30,13 +30,14 @@ public class PlanMode : MonoBehaviour
     private void Awake()
     {
         sceneEffects = GetComponent<SceneEffects>();
+        planModeController = gameManagerObject.GetComponent<PlanModeController>();
     }
 
 
 
     void Start()
     {
-        planModeController = gameManagerObject.GetComponent<PlanModeController>();
+
         StartRound1();
 
     }
@@ -71,19 +72,33 @@ public class PlanMode : MonoBehaviour
     private IEnumerator PlanModeSuccess()
     {
         DeactivateAllRounds();
-        yield return new WaitForSeconds(1.0f);
-        targetRound1.SetActive(false);
-        targetRound2.SetActive(false);
+        Debug.Log("postDeactivate");
+        yield return StartCoroutine(FadeBoth(targetRound1, targetRound2, 1.0f));
+        Debug.Log("post yeilds");
         planModeController.HideCountdownAndProgress();
         planComplete.SetActive(true);
-        yield return new WaitForSeconds(1.3f);
-
+        yield return StartCoroutine(FadeOne(targetRound3, 1.0f));
         yield return StartCoroutine(sceneEffects.FadeOutSceneThen(1.0f, () =>
         {
             planModeController.EndPlanMode();
         }));
-        // planModeController.EndPlanMode();
+    }
 
+    private IEnumerator FadeBoth(GameObject obj1, GameObject obj2, float duration)
+    {
+        Coroutine c1 = StartCoroutine(sceneEffects.FadeOutObject(obj1, duration));
+        Coroutine c2 = StartCoroutine(sceneEffects.FadeOutObject(obj2, duration));
+        yield return c1;
+        yield return c2;
+        obj1.SetActive(false);
+        obj2.SetActive(false);
+    }
+
+    private IEnumerator FadeOne(GameObject obj1, float duration)
+    {
+        Coroutine c1 = StartCoroutine(sceneEffects.FadeOutObject(obj1, duration));
+        yield return c1;
+        obj1.SetActive(false);
     }
 
 
