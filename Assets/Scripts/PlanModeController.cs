@@ -9,12 +9,6 @@ public class PlanModeController : MonoBehaviour
     public GameObject gameManagerObject;
     private GameManager gameManager;
 
-    //public void FadeOutAndDeactivateUI(GameObject obj, float duration)
-    //{
-    //    CanvasGroup cg = obj.GetComponent<CanvasGroup>();
-    //    StartCoroutine(canvasEffects.FadeOutCanvasGroup(cg, duration, true));
-    //}
-
     // Canvas Objects
     public GameObject planModeIntroObj;
     private ModeIntro planModeIntro;
