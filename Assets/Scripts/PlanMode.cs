@@ -31,11 +31,12 @@ public class PlanMode : MonoBehaviour
     {
         sceneEffects = GetComponent<SceneEffects>();
         planModeController = gameManagerObject.GetComponent<PlanModeController>();
+        DeactivateAllRounds();
     }
 
 
 
-    void Start()
+    public void StartPlan()
     {
 
         StartRound1();
@@ -50,20 +51,20 @@ public class PlanMode : MonoBehaviour
         if (onTargetHitCount == 1)
         {
             targetRound1.SetActive(true);
-            planModeController.UpdateProgress(0.33f);
+            planModeController.UpdateProgress(1);
             StartRound2();
         }
         else if (onTargetHitCount == 2)
         {
             targetRound2.SetActive(true);
-            planModeController.UpdateProgress(0.66f);
+            planModeController.UpdateProgress(2);
             StartRound3();
         }
         else if (onTargetHitCount >= 3)
         {
             targetRound3.SetActive(true);
 
-            planModeController.UpdateProgress(1f);
+            planModeController.UpdateProgress(3);
             planModeController.StopCountdown();
             StartCoroutine(PlanModeSuccess());
         }
@@ -100,8 +101,6 @@ public class PlanMode : MonoBehaviour
         yield return c1;
         obj1.SetActive(false);
     }
-
-
 
     public void ReportTapsToController()
     {

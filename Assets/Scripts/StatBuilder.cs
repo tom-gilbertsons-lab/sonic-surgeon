@@ -5,7 +5,6 @@ using TMPro;
 
 public class StatBuilder : MonoBehaviour
 {
-    public TextMeshProUGUI titleTMP;
     public TextMeshProUGUI onTargetHitTMP;
     public TextMeshProUGUI offTargetHitTMP;
     public TextMeshProUGUI timeRemainingTMP;
@@ -17,14 +16,12 @@ public class StatBuilder : MonoBehaviour
     public Material amberMaterial;
     public Material redMaterial;
 
-    public void SetPlanStats(string title, int onTarget, int offTarget, int timeRemaining, float progressVal)
+    public void SetPlanStats(int onTarget, int offTarget, int timeRemaining, float progressVal)
     {
         // Set text values
-        titleTMP.text = title;
 
 
-
-        onTargetHitTMP.text = $"On Target Hits:    {onTarget}";
+        onTargetHitTMP.text = $"{onTarget}";
 
         if (onTarget >= 3)
         {
@@ -36,7 +33,7 @@ public class StatBuilder : MonoBehaviour
         }
 
 
-        offTargetHitTMP.text = $"Off Target Hits:   {offTarget}";
+        offTargetHitTMP.text = $"{offTarget}";
         if (offTarget >= 15)
         {
             onTargetHitTMP.fontSharedMaterial = redMaterial;
@@ -51,7 +48,7 @@ public class StatBuilder : MonoBehaviour
         }
 
 
-        timeRemainingTMP.text = $"Time Remaining:    {timeRemaining}s";
+        timeRemainingTMP.text = $"{timeRemaining}s";
 
         if (timeRemaining >= 15)
         {
@@ -66,7 +63,7 @@ public class StatBuilder : MonoBehaviour
             timeRemainingTMP.fontSharedMaterial = redMaterial;
         }
 
-        progressTMP.text = $"Progress:         {progressVal * 100f:F0}%";
+        progressTMP.text = $"{progressVal * 100f:F0}%";
 
         if (progressVal >= 0.999)
         {
@@ -83,7 +80,6 @@ public class StatBuilder : MonoBehaviour
     public void SetTreatStats(string title, int onTarget, int offTarget, int timeRemaining, float progressVal)
     {
         // Set text values
-        titleTMP.text = title;
 
 
         Debug.Log("In Treat Stats");

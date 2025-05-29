@@ -17,7 +17,7 @@ public class PlanOutro : MonoBehaviour
     public void OnEnable()
     {
         statsBox.SetActive(true);
-        statBuilder.SetPlanStats("Plan Report:", gameManager.planOnTarget, gameManager.planOffTarget, gameManager.planTimeRemaining, gameManager.planProgressVal);
+        statBuilder.SetPlanStats(gameManager.planOnTarget, gameManager.planOffTarget, gameManager.planTimeRemaining, gameManager.planProgressVal);
     }
 
 }

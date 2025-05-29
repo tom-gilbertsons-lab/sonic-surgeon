@@ -34,7 +34,7 @@ public class GameOutro : MonoBehaviour
         Debug.Log("Progress " + progress.ToString());
         // build the stats boxes
         statsBoxLeft.SetActive(true);
-        statBuilderL.SetPlanStats("Plan Report:", gameManager.planOnTarget, gameManager.planOffTarget, gameManager.planTimeRemaining, gameManager.planProgressVal);
+        statBuilderL.SetPlanStats(gameManager.planOnTarget, gameManager.planOffTarget, gameManager.planTimeRemaining, gameManager.planProgressVal);
 
         statsBoxRight.SetActive(true);
         statBuilderR.SetTreatStats("Operation Note:", gameManager.treatOnTarget, gameManager.treatOffTarget, gameManager.treatTimeRemaining, gameManager.treatProgressVal);

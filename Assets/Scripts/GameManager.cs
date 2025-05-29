@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
     private PlanModeController planModeController;
     private TreatModeController treatModeController;
 
+    // CanvasObjects
+    public GameObject planModeUI;
+
     // Transition Objects 
     public GameObject planSuccessScreen;
     public GameObject planFailScreen;
@@ -30,38 +33,41 @@ public class GameManager : MonoBehaviour
     public float treatProgressVal;
 
 
-
-
-    public GameObject progressIndicator;
-
     private void Awake()
     {
         planModeController = GetComponent<PlanModeController>();
         treatModeController = GetComponent<TreatModeController>();
+        planModeUI.SetActive(true);
     }
 
 
     private void Start()
     {
-        // startScreen.SetActive(true);
-        progressIndicator.SetActive(true);
-    }
-    public void StartGame()
-    {
-        StartCoroutine(StartGameRoutine());
+        startScreen.SetActive(true);
     }
 
-    public IEnumerator StartGameRoutine()
+    public void StartGame()
     {
-        FadeOutAndDeactivateUI(startScreen, 2.0f);
-        yield return new WaitForSeconds(2.0f);
-        planModeController.StartPlanModeIntro();
+        FadeOutAndDeactivateUI(startScreen, 0.5f, new[] { "TitleObject", "Button" });
+        planModeController.StartIntro();
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void EndPlanMode()
     {
         Debug.Log("In GameManager, end of Plan Mode");
-
+        EndSession();
         GrabPlanStats();
 
         if (planModeController.planModeComplete)
@@ -108,14 +114,38 @@ public class GameManager : MonoBehaviour
     {
         obj.SetActive(true);
         CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+        cg.alpha = 0f;
         StartCoroutine(canvasEffects.FadeCanvasGroup(cg, 0f, 1f, duration));
     }
 
-    public void FadeOutAndDeactivateUI(GameObject obj, float duration)
+    public void FadeOutAndDeactivateUI(GameObject obj, float duration, string[] childNamesToDeactivate = null)
     {
+        // Deactivate named child objects if specified
+        if (childNamesToDeactivate != null)
+        {
+            foreach (string childName in childNamesToDeactivate)
+            {
+                Transform child = obj.transform.Find(childName);
+                if (child != null)
+                    child.gameObject.SetActive(false);
+                else
+                    Debug.LogWarning($"Child '{childName}' not found under '{obj.name}'");
+            }
+        }
+
+        // Fade out the primary object's canvas group
         CanvasGroup cg = obj.GetComponent<CanvasGroup>();
-        StartCoroutine(canvasEffects.FadeOutCanvasGroup(cg, duration, true));
+        if (cg != null)
+        {
+            StartCoroutine(canvasEffects.FadeCanvasGroup(cg, 1f, 0f, duration, true));
+        }
+        else
+        {
+            Debug.LogWarning("No CanvasGroup found on object: " + obj.name);
+            obj.SetActive(false);
+        }
     }
+
 
     private void GrabPlanStats()
     {
@@ -136,6 +166,15 @@ public class GameManager : MonoBehaviour
     public void EndSession()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void EnableAllColliders(GameObject gameObject, bool enable)
+    {
+        BoxCollider2D[] colliders = gameObject.GetComponentsInChildren<BoxCollider2D>(includeInactive: true);
+        foreach (var col in colliders)
+        {
+            col.enabled = enable;
+        }
     }
 
 }

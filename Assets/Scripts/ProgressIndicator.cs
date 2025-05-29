@@ -2,35 +2,44 @@ using UnityEngine;
 
 public class ProgressIndicator : MonoBehaviour
 {
-    [Range(0f, 1f)]
     public float progress = 0f;
 
-    public Color colorA = new Color(1f, 1f, 1f, 0f);
-    public Color colorB = new Color(1f, 1f, 1f, 1f);
+    public Color colourOff = new Color(0.3f, 0.3f, 0.3f, 1f); // 'off' colour
 
-    private Transform[] innerObjects;
+    public Color colourOn = new Color(0f, 1f, 1f, 1f);       // target colour\
 
-    void Start()
+    public Color transducerColour = Color.white;
+
+
+    public void Start()
     {
-        innerObjects = GetComponentsInChildren<Transform>(includeInactive: true);
+        Transform transducer = transform.Find("Outer");
+        // Set outer colour
+
+        foreach (Transform child in transducer)
+        {
+            Renderer transducerRend = child.GetComponent<Renderer>();
+            transducerRend.material.color = transducerColour;
+        }
+
     }
 
-    void Update()
+    public void ApplyProgress()
     {
-        if (innerObjects == null || innerObjects.Length == 0)
-            return;
-
-        int binSize = 8;
-        for (int i = 0; i < innerObjects.Length; i++)
+        for (int i = 1; i <= 8; i++)
         {
-            if (innerObjects[i] == transform) continue; // skip root
-
-            float localProgress = Mathf.Clamp01((progress * innerObjects.Length - i) / binSize);
-            Renderer rend = innerObjects[i].GetComponent<Renderer>();
-            if (rend != null)
+            Transform lvl = transform.Find("Lvl" + i);
+            foreach (Transform child in lvl)
             {
-                rend.material.color = Color.Lerp(colorA, colorB, localProgress);
+                Renderer rend = child.GetComponent<Renderer>();
+                float localProgress = Mathf.Clamp01((progress * 8f - (i - 1)));
+                rend.material.color = Color.Lerp(colourOff, colourOn, localProgress);
             }
         }
+
+        // Show complete object only when progress is full
+        transform.Find("Complete").gameObject.SetActive(progress >= 1f);
     }
+
 }
+

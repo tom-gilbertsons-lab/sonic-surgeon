@@ -15,6 +15,29 @@ public class CanvasEffects : MonoBehaviour
         }
     }
 
+    public IEnumerator TypeTextFixed(TextMeshProUGUI textElement, string fullText, float letterDelay = 0.05f)
+    {
+        // Set full text using rich text tags to hide it all
+        string hiddenText = "";
+        foreach (char c in fullText)
+            hiddenText += $"<alpha=#00>{c}";
+
+        textElement.text = hiddenText;
+
+        for (int i = 0; i < fullText.Length; i++)
+        {
+            // Reveal one character at a time
+            string visible = fullText.Substring(0, i + 1);
+            string hidden = "";
+            for (int j = i + 1; j < fullText.Length; j++)
+                hidden += $"<alpha=#00>{fullText[j]}";
+
+            textElement.text = visible + hidden;
+            yield return new WaitForSeconds(letterDelay);
+        }
+    }
+
+
     public IEnumerator FadeText(TextMeshProUGUI tmp, float startA, float endA, float dur)
     {
         float t = 0f;
@@ -49,56 +72,33 @@ public class CanvasEffects : MonoBehaviour
         img.color = final;
     }
 
-    public IEnumerator FadeCanvasGroup(CanvasGroup cg, float startA, float endA, float dur, bool makeInteractiveAfter = true)
+    public IEnumerator FadeCanvasGroup(CanvasGroup cg, float startA, float endA, float dur, bool deactivateWhenDone = false)
     {
         float t = 0f;
         cg.alpha = startA;
-        cg.blocksRaycasts = true;
+        cg.blocksRaycasts = false;
         cg.interactable = false;
 
         while (t < dur)
         {
             t += Time.deltaTime;
-            float a = Mathf.Lerp(startA, endA, t / dur);
-            cg.alpha = a;
+            cg.alpha = Mathf.Lerp(startA, endA, t / dur);
             yield return null;
         }
 
         cg.alpha = endA;
 
-        if (makeInteractiveAfter && endA > 0f)
+        if (endA > 0f)
         {
             cg.interactable = true;
-        }
-        else
-        {
-            cg.interactable = false;
-            cg.blocksRaycasts = false;
-        }
-    }
-
-    public IEnumerator FadeOutCanvasGroup(CanvasGroup cg, float dur, bool deactivateAfter = true)
-    {
-        float startA = cg.alpha;
-        float t = 0f;
-
-        cg.interactable = false;
-        cg.blocksRaycasts = false;
-
-        while (t < dur)
-        {
-            t += Time.deltaTime;
-            float a = Mathf.Lerp(startA, 0f, t / dur);
-            cg.alpha = a;
-            yield return null;
+            cg.blocksRaycasts = true;
         }
 
-        cg.alpha = 0f;
-
-        if (deactivateAfter)
+        if (deactivateWhenDone && endA == 0f)
         {
             cg.gameObject.SetActive(false);
         }
     }
+
 
 }

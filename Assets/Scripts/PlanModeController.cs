@@ -8,14 +8,19 @@ public class PlanModeController : MonoBehaviour
     // Game Mananger Objects 
     public GameObject gameManagerObject;
     private GameManager gameManager;
-
-    // Canvas Objects
-    public GameObject planModeIntroObj;
-    private ModeIntro planModeIntro;
     public CanvasEffects canvasEffects;
 
-    public GameObject progress;
-    private PlanProgress planProgress;
+
+    // Canvas Objects
+    public GameObject planIntroCanvas;
+    private Intro planIntro;
+    public GameObject msg1;
+    public GameObject msg2;
+    public GameObject msg3;
+
+
+    public GameObject progressDisplayObj;
+    private ProgressIndicator progressDisplay;
 
     public GameObject countdownDisplay;
     private CountdownTimer countdownTimer;
@@ -23,7 +28,10 @@ public class PlanModeController : MonoBehaviour
 
     public bool planModeComplete;
 
-    public GameObject planMode;
+    public GameObject planSceneObj;
+    private PlanMode planMode;
+
+
 
     public int timeRemaining;
     public float progressVal;
@@ -32,10 +40,11 @@ public class PlanModeController : MonoBehaviour
 
     void Awake()
     {
-        countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
-        planProgress = progress.GetComponent<PlanProgress>();
-        planModeIntro = planModeIntroObj.GetComponent<ModeIntro>();
         gameManager = gameManagerObject.GetComponent<GameManager>();
+        progressDisplay = progressDisplayObj.GetComponent<ProgressIndicator>();
+        countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
+        planIntro = planIntroCanvas.GetComponent<Intro>();
+        planMode = planSceneObj.GetComponent<PlanMode>();
     }
 
     private void Update()
@@ -48,28 +57,26 @@ public class PlanModeController : MonoBehaviour
         }
     }
 
-
-    public void StartPlanModeIntro()
+    public void StartIntro()
     {
-        planModeIntroObj.SetActive(true);
-        StartCoroutine(planModeIntro.RunFullIntro(StartPlanMode));
+        planSceneObj.SetActive(true);
+        planIntroCanvas.SetActive(true);
+        StartCoroutine(planIntro.RunIntro(StartPlanMode));
+
     }
-
-
     public void StartPlanMode()
     {
-        if (!planMode.activeSelf)
+        if (!planSceneObj.activeSelf)
         {
-            planMode.SetActive(true);
+            planSceneObj.SetActive(true);
         }
 
         SetUpProgressIndicator();
         SetUpCountdownIndicator();
-        planModeIntroObj.SetActive(false);
+        FadeInfoBox(planIntroCanvas);
+        planMode.StartPlan();
+
     }
-
-
-
 
     public void EndPlanMode()
     {
@@ -88,7 +95,7 @@ public class PlanModeController : MonoBehaviour
 
     public void DeactivatePlanMode()
     {
-        planMode.SetActive(false);
+        planSceneObj.SetActive(false);
     }
 
     public void StopCountdown()
@@ -99,7 +106,7 @@ public class PlanModeController : MonoBehaviour
     public void HideCountdownAndProgress()
     {
         gameManager.FadeOutAndDeactivateUI(countdownDisplay, 0.5f);
-        gameManager.FadeOutAndDeactivateUI(progress, 0.5f);
+        gameManager.FadeOutAndDeactivateUI(progressDisplayObj, 0.5f);
     }
 
 
@@ -113,7 +120,7 @@ public class PlanModeController : MonoBehaviour
     // Canvas Overlay Methods 
     private void SetUpProgressIndicator()
     {
-        progress.SetActive(true);
+        progressDisplayObj.SetActive(true);
 
     }
 
@@ -123,28 +130,41 @@ public class PlanModeController : MonoBehaviour
         countdownTimer.StartCountdown();
     }
 
-
-    public void UpdateProgress(float progress)
+    public void UpdateProgress(int stage)
     {
-        progressVal = progress;
-        if (progress < 0.34)
+        switch (stage)
         {
-            planProgress.SetStage1();
+            case 1:
+                progressDisplay.progress = 0.33f;
+                StartCoroutine(InfoBox(msg1));
+                break;
+            case 2:
+                progressDisplay.progress = 0.66f;
+                StartCoroutine(InfoBox(msg2));
+                break;
+            case 3:
+                progressDisplay.progress = 1f;
+                StartCoroutine(InfoBox(msg3));
+                break;
         }
 
-        if ((progress > 0.34) && (progress < 0.67))
-        {
-            planProgress.SetStage1();
-            planProgress.SetStage2();
-        }
-
-        if (progress > 0.9)
-        {
-            planProgress.SetStage1();
-            planProgress.SetStage2();
-            planProgress.SetStage3();
-        }
+        progressDisplay.ApplyProgress();
     }
 
+
+    public IEnumerator InfoBox(GameObject obj)
+    {
+        gameManager.ActivateAndFadeInUI(obj, 0.3f);
+        yield return new WaitForSeconds(2f);
+        FadeInfoBox(obj);
+    }
+
+    private void FadeInfoBox(GameObject obj)
+    {
+        // Before starting coroutine
+        Outline outline = obj.GetComponentInChildren<Outline>();
+        if (outline != null) outline.enabled = false;
+        gameManager.FadeOutAndDeactivateUI(obj, 0.3f);
+    }
 }
 
