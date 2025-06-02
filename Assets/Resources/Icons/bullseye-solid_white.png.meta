@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      bullseye-solid_white_0: 1881282043123228988
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

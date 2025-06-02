@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      circle-xmark-solid_white_0: -8447930055604115594
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

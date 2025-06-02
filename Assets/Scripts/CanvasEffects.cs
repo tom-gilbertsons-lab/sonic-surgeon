@@ -72,7 +72,7 @@ public class CanvasEffects : MonoBehaviour
         img.color = final;
     }
 
-    public IEnumerator FadeCanvasGroup(CanvasGroup cg, float startA, float endA, float dur, bool deactivateWhenDone = false)
+    public IEnumerator FadeCanvasGroupOld(CanvasGroup cg, float startA, float endA, float dur, bool deactivateWhenDone = false)
     {
         float t = 0f;
         cg.alpha = startA;
@@ -101,4 +101,385 @@ public class CanvasEffects : MonoBehaviour
     }
 
 
+    public void FadeIn(GameObject obj, float duration,
+                     GameObject[] manualDeactivate = null,
+                     bool fadeChildrenGraphics = false)
+    {
+        CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+        if (cg == null)
+        {
+            Debug.LogWarning("No CanvasGroup found on object: " + obj.name);
+            return;
+        }
+
+        obj.SetActive(true);
+        StartCoroutine(FadeCanvasGroup(cg, 0f, 1f, duration, false, manualDeactivate, fadeChildrenGraphics));
+    }
+
+    public void FadeOut(GameObject obj, float duration,
+                        GameObject[] manualDeactivate = null,
+                        bool fadeChildrenGraphics = false)
+    {
+        CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+        if (cg == null)
+        {
+            Debug.LogWarning("No CanvasGroup found on object: " + obj.name);
+            return;
+        }
+
+        StartCoroutine(FadeCanvasGroup(cg, 1f, 0f, duration, true, manualDeactivate, fadeChildrenGraphics));
+    }
+
+    public IEnumerator FadeOutRoutine(GameObject obj, float duration,
+                                   GameObject[] manualDeactivate = null,
+                                   bool fadeChildrenGraphics = false)
+    {
+        CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+        if (cg == null)
+        {
+            Debug.LogWarning("No CanvasGroup found on object: " + obj.name);
+            yield break;
+        }
+
+        yield return StartCoroutine(FadeCanvasGroup(cg, 1f, 0f, duration, true, manualDeactivate, fadeChildrenGraphics));
+    }
+
+    public IEnumerator FadeInRoutine(GameObject obj, float duration,
+                                      GameObject[] manualDeactivate = null,
+                                      bool fadeChildrenGraphics = false)
+    {
+        CanvasGroup cg = obj.GetComponent<CanvasGroup>();
+        if (cg == null)
+        {
+            Debug.LogWarning("No CanvasGroup found on object: " + obj.name);
+            yield break;
+        }
+
+        obj.SetActive(true);
+        yield return StartCoroutine(FadeCanvasGroup(cg, 0f, 1f, duration, false, manualDeactivate, fadeChildrenGraphics));
+    }
+
+    public IEnumerator FadeCanvasGroup(CanvasGroup cg, float from, float to, float duration,
+                                   bool deactivateAfter = false,
+                                   GameObject[] manualDeactivate = null,
+                                   bool fadeChildrenGraphics = false)
+    {
+        if (manualDeactivate != null)
+        {
+            foreach (GameObject go in manualDeactivate)
+            {
+                if (go == null) continue;
+                Outline outline = go.GetComponent<Outline>();
+                if (outline != null) outline.enabled = false;
+                go.SetActive(false);
+            }
+        }
+
+        cg.interactable = false;
+        cg.blocksRaycasts = false;
+        cg.alpha = from;
+
+        Graphic[] graphics = null;
+        Outline[] outlines = null;
+        Color baseOutlineColor = Color.white;
+
+        // Background (if present) is faded separately
+        Transform bgTransform = cg.transform.Find("Background");
+        Graphic backgroundGraphic = bgTransform ? bgTransform.GetComponent<Graphic>() : null;
+        Color bgColor = backgroundGraphic ? backgroundGraphic.color : Color.clear;
+
+        if (fadeChildrenGraphics)
+        {
+            graphics = cg.GetComponentsInChildren<Graphic>(includeInactive: true);
+            outlines = cg.GetComponentsInChildren<Outline>(includeInactive: true);
+
+            if (outlines.Length > 0)
+                baseOutlineColor = outlines[0].effectColor;
+
+            float initialVisual = SnowballFade(from);
+            foreach (var g in graphics)
+            {
+                if (g != null && g != backgroundGraphic) // skip background here
+                {
+                    Color baseColor = g.color;
+                    baseColor.a = initialVisual;
+                    g.color = baseColor;
+                }
+            }
+
+            foreach (var o in outlines)
+            {
+                if (o != null)
+                {
+                    float oa = (from > to) ? 1f : 0f;
+                    o.effectColor = new Color(baseOutlineColor.r, baseOutlineColor.g, baseOutlineColor.b, oa);
+                }
+            }
+        }
+
+        float elapsed = 0f;
+        float outlineFadeTime = duration * 0.1f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float easedT = t * t * (3f - 2f * t);
+            float currentAlpha = Mathf.Lerp(from, to, easedT);
+            cg.alpha = currentAlpha;
+
+            // === Background fades in first or out last ===
+            if (backgroundGraphic)
+            {
+                float bgT = (from < to)
+                    ? Mathf.Clamp01(t * 1.2f)               // fade in faster
+                    : Mathf.Clamp01((t - 0.2f) / 0.8f);     // fade out later
+
+                float easedBgT = bgT * bgT * (3f - 2f * bgT);
+                float bgAlpha = Mathf.Lerp(from, to, easedBgT);
+
+                Color bgC = bgColor;
+                bgC.a = bgAlpha;
+                backgroundGraphic.color = bgC;
+            }
+
+            if (fadeChildrenGraphics && graphics != null)
+            {
+                float visual = SnowballFade(currentAlpha);
+                foreach (var g in graphics)
+                {
+                    if (g != null && g != backgroundGraphic)
+                    {
+                        Color original = g.color;
+                        g.color = new Color(original.r, original.g, original.b, visual);
+                    }
+                }
+            }
+
+            if (fadeChildrenGraphics && outlines != null)
+            {
+                float oAlpha = 0f;
+                if (from > to)
+                {
+                    oAlpha = Mathf.Lerp(1f, 0f, Mathf.Clamp01(elapsed / outlineFadeTime));
+                }
+                else
+                {
+                    float fadeInStart = duration - outlineFadeTime;
+                    if (elapsed >= fadeInStart)
+                    {
+                        float p = (elapsed - fadeInStart) / outlineFadeTime;
+                        oAlpha = Mathf.Lerp(0f, 1f, Mathf.Clamp01(p));
+                    }
+                }
+
+                foreach (var o in outlines)
+                {
+                    if (o != null)
+                        o.effectColor = new Color(baseOutlineColor.r, baseOutlineColor.g, baseOutlineColor.b, oAlpha);
+                }
+            }
+
+            yield return null;
+        }
+
+        cg.alpha = to;
+
+        if (backgroundGraphic)
+        {
+            Color finalBg = bgColor;
+            finalBg.a = to;
+            backgroundGraphic.color = finalBg;
+        }
+
+        if (fadeChildrenGraphics && graphics != null)
+        {
+            float visualFinal = SnowballFade(to);
+            foreach (var g in graphics)
+            {
+                if (g != null && g != backgroundGraphic)
+                {
+                    Color c = g.color;
+                    c.a = visualFinal;
+                    g.color = c;
+                }
+            }
+        }
+
+        if (fadeChildrenGraphics && outlines != null)
+        {
+            float finalAlpha = (to > from) ? 1f : 0f;
+            foreach (var o in outlines)
+            {
+                if (o != null)
+                    o.effectColor = new Color(baseOutlineColor.r, baseOutlineColor.g, baseOutlineColor.b, finalAlpha);
+            }
+        }
+
+        if (to > 0.01f)
+        {
+            cg.interactable = true;
+            cg.blocksRaycasts = true;
+        }
+
+        if (deactivateAfter && to == 0f)
+            cg.gameObject.SetActive(false);
+    }
+
+    //public IEnumerator FadeCanvasGroup(CanvasGroup cg, float from, float to, float duration,
+    //                               bool deactivateAfter = false,
+    //                               GameObject[] manualDeactivate = null,
+    //                               bool fadeChildrenGraphics = false)
+    //{
+    //    if (manualDeactivate != null)
+    //    {
+    //        foreach (GameObject go in manualDeactivate)
+    //        {
+    //            if (go == null) continue;
+    //            Outline outline = go.GetComponent<Outline>();
+    //            if (outline != null) outline.enabled = false;
+    //            go.SetActive(false);
+    //        }
+    //    }
+
+    //    cg.interactable = false;
+    //    cg.blocksRaycasts = false;
+    //    cg.alpha = from;
+
+    //    Graphic[] graphics = null;
+    //    Outline[] outlines = null;
+    //    Color baseOutlineColor = Color.white;
+
+    //    if (fadeChildrenGraphics)
+    //    {
+    //        graphics = cg.GetComponentsInChildren<Graphic>(includeInactive: true);
+    //        outlines = cg.GetComponentsInChildren<Outline>(includeInactive: true);
+
+    //        if (outlines.Length > 0)
+    //            baseOutlineColor = outlines[0].effectColor;
+
+    //        float initialVisual = SnowballFade(from);
+    //        foreach (var g in graphics)
+    //        {
+    //            if (g != null)
+    //            {
+    //                Color baseColor = g.color;
+    //                baseColor.a = initialVisual;
+    //                g.color = baseColor;
+    //            }
+    //        }
+
+    //        foreach (var o in outlines)
+    //        {
+    //            if (o != null)
+    //            {
+    //                float oa = (from > to) ? 1f : 0f;
+    //                o.effectColor = new Color(baseOutlineColor.r, baseOutlineColor.g, baseOutlineColor.b, oa);
+    //            }
+    //        }
+    //    }
+
+    //    float elapsed = 0f;
+    //    float outlineFadeTime = duration * 0.1f;
+
+    //    while (elapsed < duration)
+    //    {
+    //        elapsed += Time.deltaTime;
+    //        float t = Mathf.Clamp01(elapsed / duration);
+    //        float easedT = t * t * (3f - 2f * t);
+    //        float currentAlpha = Mathf.Lerp(from, to, easedT);
+    //        cg.alpha = currentAlpha;
+
+    //        if (fadeChildrenGraphics && graphics != null)
+    //        {
+    //            float visual = SnowballFade(currentAlpha);
+    //            foreach (var g in graphics)
+    //            {
+    //                if (g != null)
+    //                {
+    //                    Color original = g.color;
+    //                    g.color = new Color(original.r, original.g, original.b, visual);
+    //                }
+    //            }
+    //        }
+
+    //        if (fadeChildrenGraphics && outlines != null)
+    //        {
+    //            float oAlpha = 0f;
+    //            if (from > to)
+    //            {
+    //                // Fade OUT: outline fades quickly at start
+    //                oAlpha = Mathf.Lerp(1f, 0f, Mathf.Clamp01(elapsed / outlineFadeTime));
+    //            }
+    //            else
+    //            {
+    //                // Fade IN: outline fades quickly at end
+    //                float fadeInStart = duration - outlineFadeTime;
+    //                if (elapsed >= fadeInStart)
+    //                {
+    //                    float p = (elapsed - fadeInStart) / outlineFadeTime;
+    //                    oAlpha = Mathf.Lerp(0f, 1f, Mathf.Clamp01(p));
+    //                }
+    //            }
+
+    //            foreach (var o in outlines)
+    //            {
+    //                if (o != null)
+    //                    o.effectColor = new Color(baseOutlineColor.r, baseOutlineColor.g, baseOutlineColor.b, oAlpha);
+    //            }
+    //        }
+
+    //        yield return null;
+    //    }
+
+    //    cg.alpha = to;
+
+    //    if (fadeChildrenGraphics && graphics != null)
+    //    {
+    //        float visualFinal = SnowballFade(to);
+    //        foreach (var g in graphics)
+    //        {
+    //            if (g != null)
+    //            {
+    //                Color c = g.color;
+    //                c.a = visualFinal;
+    //                g.color = c;
+    //            }
+    //        }
+    //    }
+
+    //    if (fadeChildrenGraphics && outlines != null)
+    //    {
+    //        float finalAlpha = (to > from) ? 1f : 0f;
+    //        foreach (var o in outlines)
+    //        {
+    //            if (o != null)
+    //                o.effectColor = new Color(baseOutlineColor.r, baseOutlineColor.g, baseOutlineColor.b, finalAlpha);
+    //        }
+    //    }
+
+    //    if (to > 0.01f)
+    //    {
+    //        cg.interactable = true;
+    //        cg.blocksRaycasts = true;
+    //    }
+
+    //    if (deactivateAfter && to == 0f)
+    //        cg.gameObject.SetActive(false);
+    //}
+
+    private float SnowballFade(float a)
+    {
+        float rampStart = 0.15f;
+        if (a <= rampStart) return 0f;
+
+        float t = (a - rampStart) / (1f - rampStart);
+        return Mathf.Pow(t, 1.5f);
+    }
+
+
+
 }
+
+
+

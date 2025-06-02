@@ -16,8 +16,7 @@ public class PlanMode : MonoBehaviour
     public GameObject targetRound2;
     public GameObject round3;
     public GameObject targetRound3;
-
-    public GameObject planComplete;
+    public GameObject targetComplete;
 
 
     public int onTargetHitCount = 0;
@@ -63,43 +62,25 @@ public class PlanMode : MonoBehaviour
         else if (onTargetHitCount >= 3)
         {
             targetRound3.SetActive(true);
-
-            planModeController.UpdateProgress(3);
-            planModeController.StopCountdown();
             StartCoroutine(PlanModeSuccess());
         }
     }
 
+
     private IEnumerator PlanModeSuccess()
     {
+        planModeController.StopCountdown();
         DeactivateAllRounds();
-        Debug.Log("postDeactivate");
-        yield return StartCoroutine(FadeBoth(targetRound1, targetRound2, 1.0f));
-        Debug.Log("post yeilds");
-        planModeController.HideCountdownAndProgress();
-        planComplete.SetActive(true);
-        yield return StartCoroutine(FadeOne(targetRound3, 1.0f));
+        yield return new WaitForSeconds(1f);
+        yield return StartCoroutine(GrowInX(targetComplete, 1.5f));
+        planModeController.HideOverlays();
+        planModeController.UpdateProgress(3);
+        yield return new WaitForSeconds(1f);
+
         yield return StartCoroutine(sceneEffects.FadeOutSceneThen(1.0f, () =>
         {
             planModeController.EndPlanMode();
         }));
-    }
-
-    private IEnumerator FadeBoth(GameObject obj1, GameObject obj2, float duration)
-    {
-        Coroutine c1 = StartCoroutine(sceneEffects.FadeOutObject(obj1, duration));
-        Coroutine c2 = StartCoroutine(sceneEffects.FadeOutObject(obj2, duration));
-        yield return c1;
-        yield return c2;
-        obj1.SetActive(false);
-        obj2.SetActive(false);
-    }
-
-    private IEnumerator FadeOne(GameObject obj1, float duration)
-    {
-        Coroutine c1 = StartCoroutine(sceneEffects.FadeOutObject(obj1, duration));
-        yield return c1;
-        obj1.SetActive(false);
     }
 
     public void ReportTapsToController()
@@ -134,6 +115,28 @@ public class PlanMode : MonoBehaviour
         round1.SetActive(false);
         round2.SetActive(false);
         round3.SetActive(false);
+    }
+
+
+    public IEnumerator GrowInX(GameObject obj, float duration = 0.5f)
+    {
+        obj.SetActive(true);
+
+        Vector3 originalScale = obj.transform.localScale;
+        obj.transform.localScale = new Vector3(0f, originalScale.y, originalScale.z);
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            float smoothT = Mathf.SmoothStep(0f, 1f, t);
+            float newX = Mathf.Lerp(0f, originalScale.x, smoothT);
+            obj.transform.localScale = new Vector3(newX, originalScale.y, originalScale.z);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        obj.transform.localScale = originalScale; // ensure final size
     }
 
 

@@ -11,8 +11,6 @@ public class Intro : MonoBehaviour
     public TextMeshProUGUI instructionText;
     public TextMeshProUGUI prompt;
 
-    public float letterDelay = 0.15f;
-
     private string titleTextStr;
     private string instructionTextStr;
 
@@ -25,8 +23,8 @@ public class Intro : MonoBehaviour
 
     public IEnumerator RunIntro(System.Action onDone)
     {
-        yield return StartCoroutine(canvasEffects.TypeText(titleText, titleTextStr, letterDelay));
-        yield return StartCoroutine(canvasEffects.TypeText(instructionText, instructionTextStr, letterDelay));
+        yield return StartCoroutine(canvasEffects.TypeTextFixed(titleText, titleTextStr, 0.15f));
+        yield return StartCoroutine(canvasEffects.TypeTextFixed(instructionText, instructionTextStr, 0.1f));
         yield return new WaitForSeconds(1f);
         yield return StartCoroutine(PromptCountdown());
         onDone?.Invoke();

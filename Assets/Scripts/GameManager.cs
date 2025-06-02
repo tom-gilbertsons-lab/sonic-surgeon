@@ -13,9 +13,6 @@ public class GameManager : MonoBehaviour
     private PlanModeController planModeController;
     private TreatModeController treatModeController;
 
-    // CanvasObjects
-    public GameObject planModeUI;
-
     // Transition Objects 
     public GameObject planSuccessScreen;
     public GameObject planFailScreen;
@@ -37,7 +34,6 @@ public class GameManager : MonoBehaviour
     {
         planModeController = GetComponent<PlanModeController>();
         treatModeController = GetComponent<TreatModeController>();
-        planModeUI.SetActive(true);
     }
 
 
@@ -46,28 +42,25 @@ public class GameManager : MonoBehaviour
         startScreen.SetActive(true);
     }
 
+
     public void StartGame()
     {
-        FadeOutAndDeactivateUI(startScreen, 0.5f, new[] { "TitleObject", "Button" });
-        planModeController.StartIntro();
+        StartCoroutine(StartGameRoutine());
     }
 
+    private IEnumerator StartGameRoutine()
+    {
+        planModeController.planSceneObj.SetActive(true);
+        //yield return canvasEffects.FadeOutRoutine(startScreen, 1.0f, fadeChildrenGraphics: true);
+        StartCoroutine(canvasEffects.FadeOutRoutine(startScreen, 1.0f, fadeChildrenGraphics: true));
+        yield return new WaitForSeconds(0.5f);
+        planModeController.StartIntro();
 
-
-
-
-
-
-
-
-
-
-
+    }
 
     public void EndPlanMode()
     {
         Debug.Log("In GameManager, end of Plan Mode");
-        EndSession();
         GrabPlanStats();
 
         if (planModeController.planModeComplete)
@@ -76,8 +69,20 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            ActivateAndFadeInUI(planFailScreen, 0.5f);
+            StartCoroutine(canvasEffects.FadeInRoutine(endGameScreen, 1.0f, fadeChildrenGraphics: true));
+
         }
+    }
+
+    private IEnumerator PlanToTreatTransition()
+    {
+        yield return canvasEffects.FadeInRoutine(planSuccessScreen, 1.0f, fadeChildrenGraphics: true);
+        yield return new WaitForSeconds(1.0f);
+        planModeController.DeactivatePlanMode();
+        yield return new WaitForSeconds(2f);
+        yield return canvasEffects.FadeOutRoutine(planSuccessScreen, 1.0f, fadeChildrenGraphics: true);
+        treatModeController.treatSceneObj.SetActive(true);
+        treatModeController.StartIntro();
     }
 
     public void EndTreatMode()
@@ -85,67 +90,15 @@ public class GameManager : MonoBehaviour
         Debug.Log("back in GameManager post treat");
         GrabTreatStats();
         StartCoroutine(EndGameTransition());
-
-
     }
 
     private IEnumerator EndGameTransition()
     {
-        ActivateAndFadeInUI(endGameScreen, 1.0f);
+        yield return canvasEffects.FadeInRoutine(endGameScreen, 1.0f, fadeChildrenGraphics: true);
         treatModeController.DeactivateTreatMode();
         yield return new WaitForSeconds(1.0f);
 
     }
-
-
-    private IEnumerator PlanToTreatTransition()
-    {
-        ActivateAndFadeInUI(planSuccessScreen, 1.0f);
-        yield return new WaitForSeconds(1.0f);
-        planModeController.DeactivatePlanMode();
-        yield return new WaitForSeconds(3f);
-        FadeOutAndDeactivateUI(planSuccessScreen, 0.5f);
-        treatModeController.StartTreatModeIntro();
-    }
-
-    // Utils
-
-    public void ActivateAndFadeInUI(GameObject obj, float duration)
-    {
-        obj.SetActive(true);
-        CanvasGroup cg = obj.GetComponent<CanvasGroup>();
-        cg.alpha = 0f;
-        StartCoroutine(canvasEffects.FadeCanvasGroup(cg, 0f, 1f, duration));
-    }
-
-    public void FadeOutAndDeactivateUI(GameObject obj, float duration, string[] childNamesToDeactivate = null)
-    {
-        // Deactivate named child objects if specified
-        if (childNamesToDeactivate != null)
-        {
-            foreach (string childName in childNamesToDeactivate)
-            {
-                Transform child = obj.transform.Find(childName);
-                if (child != null)
-                    child.gameObject.SetActive(false);
-                else
-                    Debug.LogWarning($"Child '{childName}' not found under '{obj.name}'");
-            }
-        }
-
-        // Fade out the primary object's canvas group
-        CanvasGroup cg = obj.GetComponent<CanvasGroup>();
-        if (cg != null)
-        {
-            StartCoroutine(canvasEffects.FadeCanvasGroup(cg, 1f, 0f, duration, true));
-        }
-        else
-        {
-            Debug.LogWarning("No CanvasGroup found on object: " + obj.name);
-            obj.SetActive(false);
-        }
-    }
-
 
     private void GrabPlanStats()
     {
@@ -166,15 +119,6 @@ public class GameManager : MonoBehaviour
     public void EndSession()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    public void EnableAllColliders(GameObject gameObject, bool enable)
-    {
-        BoxCollider2D[] colliders = gameObject.GetComponentsInChildren<BoxCollider2D>(includeInactive: true);
-        foreach (var col in colliders)
-        {
-            col.enabled = enable;
-        }
     }
 
 }

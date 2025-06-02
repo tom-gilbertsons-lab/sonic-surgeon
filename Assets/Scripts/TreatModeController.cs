@@ -7,23 +7,33 @@ using UnityEngine.Networking;
 
 public class TreatModeController : MonoBehaviour
 {
-    // Game Mananger Objects 
+    [Header("Game Manager")]
     public GameObject gameManagerObject;
     private GameManager gameManager;
+    public CanvasEffects canvasEffects;
     private LANMotorCtrl lANMotorCtrl;
 
+
     // Canvas Objects
-    public GameObject treatModeIntroObj;
-    private ModeIntro treatModeIntro;
+    [Header("TreatModeUI")]
+    public GameObject modeUI;
+    public GameObject introCanvas;
+    private Intro intro;
+    public GameObject crst4;
+    public GameObject crst3;
+    public GameObject crst2;
+    public GameObject crst1;
+    public GameObject crst0;
+    public GameObject progressDisplayObj;
+    private ProgressIndicator progressDisplay;
+    public GameObject countdownDisplay;
+    private CountdownTimer countdownTimer;
 
 
     public GameObject progress;
     private TreatProgress treatProgress;
 
-    public GameObject countdownDisplay;
-    private CountdownTimer countdownTimer;
-
-    public GameObject treatMode;
+    public GameObject treatSceneObj;
 
     public int timeRemaining;
     public float progressVal;
@@ -37,10 +47,14 @@ public class TreatModeController : MonoBehaviour
     {
         gameManager = gameManagerObject.GetComponent<GameManager>();
         countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
+        progressDisplay = progressDisplayObj.GetComponent<ProgressIndicator>();
+        intro = introCanvas.GetComponent<Intro>();
         treatProgress = progress.GetComponent<TreatProgress>();
-        treatModeIntro = treatModeIntroObj.GetComponent<ModeIntro>();
         lANMotorCtrl = gameManagerObject.GetComponent<LANMotorCtrl>();
+        treatSceneObj.GetComponent<BoxCollider2D>().enabled = false;
+
     }
+
 
     private void Update()
     {
@@ -55,26 +69,26 @@ public class TreatModeController : MonoBehaviour
     }
 
 
-    public void StartTreatModeIntro()
+    public void StartIntro()
     {
-        treatModeIntroObj.SetActive(true);
-        StartCoroutine(treatModeIntro.RunFullIntro(StartTreatMode));
-        lANMotorCtrl.StartShake();
+        modeUI.SetActive(true);
+        StartCoroutine(StartIntroRoutine());
+    }
+
+    private IEnumerator StartIntroRoutine()
+    {
+        yield return StartCoroutine(canvasEffects.FadeInRoutine(introCanvas, 1f, fadeChildrenGraphics: true));
+        yield return StartCoroutine(intro.RunIntro(StartTreatMode));
     }
 
     public void StartTreatMode()
     {
-        if (!treatMode.activeSelf)
-        {
-            treatMode.SetActive(true);
-        }
-
-        SetUpProgressIndicator();
-        SetUpCountdownIndicator();
-        Debug.Log("In TreatModeController StartTreatMode");
-        treatModeIntroObj.SetActive(false);
-
+        StartCoroutine(canvasEffects.FadeOutRoutine(introCanvas, 1.0f, fadeChildrenGraphics: true));
+        SetUpOverlays();
+        treatSceneObj.GetComponent<BoxCollider2D>().enabled = true;
     }
+
+
 
     // this will go into stats at the end: 
     public void EndTreatMode()
@@ -84,7 +98,7 @@ public class TreatModeController : MonoBehaviour
 
     public void DeactivateTreatMode()
     {
-        treatMode.SetActive(false);
+        treatSceneObj.SetActive(false);
         progress.SetActive(false);
         countdownDisplay.SetActive(false);
     }
@@ -94,10 +108,10 @@ public class TreatModeController : MonoBehaviour
         countdownTimer.CancelCountdown();
     }
 
-    public void HideCountdownAndProgress()
+    public void HideOverlays()
     {
-        gameManager.FadeOutAndDeactivateUI(countdownDisplay, 0.5f);
-        gameManager.FadeOutAndDeactivateUI(progress, 0.5f);
+        canvasEffects.FadeOut(countdownDisplay, 0.5f, fadeChildrenGraphics: true);
+        canvasEffects.FadeOut(progressDisplayObj, 0.5f, fadeChildrenGraphics: true);
     }
 
     public void OnTargetTaps()
@@ -112,16 +126,14 @@ public class TreatModeController : MonoBehaviour
         Debug.Log(offTargetTaps.ToString());
     }
 
-    // Canvas Overlay Methods 
-    private void SetUpProgressIndicator()
-    {
-        progress.SetActive(true);
-    }
 
-    private void SetUpCountdownIndicator()
+
+    private void SetUpOverlays()
     {
+        progressDisplayObj.SetActive(true);
         countdownDisplay.SetActive(true);
         countdownTimer.StartCountdown();
+
     }
 
     public void UpdateProgress(float progress, int dosesDelivered)
@@ -138,12 +150,12 @@ public class TreatModeController : MonoBehaviour
         }
         else if (progressVal > 0.5f && progressVal <= 0.99f && lastShakeLevel != 1)
         {
-            lANMotorCtrl.ShakeLo();
+            //lANMotorCtrl.ShakeLo();
             lastShakeLevel = 1;
         }
         else if (progressVal <= 0.5f && lastShakeLevel != 2)
         {
-            lANMotorCtrl.ShakeMid();
+            //lANMotorCtrl.ShakeMid();
             lastShakeLevel = 2;
         }
     }

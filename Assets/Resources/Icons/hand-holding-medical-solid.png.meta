@@ -185,7 +185,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      hand-holding-medical-solid_0: -1362845947897075251
+      hand-holding-medical-solid_1: -9084025847281730239
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

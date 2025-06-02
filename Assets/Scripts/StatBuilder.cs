@@ -1,14 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using TMPro;
 
 public class StatBuilder : MonoBehaviour
 {
-    public TextMeshProUGUI onTargetHitTMP;
-    public TextMeshProUGUI offTargetHitTMP;
-    public TextMeshProUGUI timeRemainingTMP;
-    public TextMeshProUGUI progressTMP;
+    public GameObject onTargetGroup;
+    public GameObject offTargetGroup;
+    public GameObject timeRemainingGroup;
+    public GameObject progressGroup;
 
     public CanvasEffects canvasEffects;
 
@@ -18,126 +17,92 @@ public class StatBuilder : MonoBehaviour
 
     public void SetPlanStats(int onTarget, int offTarget, int timeRemaining, float progressVal)
     {
-        // Set text values
-
-
-        onTargetHitTMP.text = $"{onTarget}";
-
+        // ON TARGET
+        Material onTargetMat;
         if (onTarget >= 3)
         {
-            onTargetHitTMP.fontSharedMaterial = greenMaterial;
+            onTargetMat = greenMaterial;
         }
         else
         {
-            onTargetHitTMP.fontSharedMaterial = redMaterial;
+            onTargetMat = redMaterial;
         }
+        ApplyStatGroupStyle(onTargetGroup, onTargetMat, onTarget.ToString());
 
-
-        offTargetHitTMP.text = $"{offTarget}";
-        if (offTarget >= 15)
+        // OFF TARGET
+        Material offTargetMat;
+        if (offTarget == 0)
         {
-            onTargetHitTMP.fontSharedMaterial = redMaterial;
+            offTargetMat = greenMaterial;
         }
-        else if (offTarget >= 8)
+        else if (offTarget < 8)
         {
-            onTargetHitTMP.fontSharedMaterial = amberMaterial;
+            offTargetMat = amberMaterial;
         }
-        else if (offTarget == 0)
+        else
         {
-            onTargetHitTMP.fontSharedMaterial = greenMaterial;
+            offTargetMat = redMaterial;
         }
+        ApplyStatGroupStyle(offTargetGroup, offTargetMat, offTarget.ToString());
 
-
-        timeRemainingTMP.text = $"{timeRemaining}s";
-
+        // TIME REMAINING
+        Material timeMat;
         if (timeRemaining >= 15)
         {
-            timeRemainingTMP.fontSharedMaterial = greenMaterial;
+            timeMat = greenMaterial;
         }
         else if (timeRemaining > 0)
         {
-            timeRemainingTMP.fontSharedMaterial = amberMaterial;
+            timeMat = amberMaterial;
         }
         else
         {
-            timeRemainingTMP.fontSharedMaterial = redMaterial;
+            timeMat = redMaterial;
         }
+        ApplyStatGroupStyle(timeRemainingGroup, timeMat, timeRemaining + "s");
 
-        progressTMP.text = $"{progressVal * 100f:F0}%";
-
-        if (progressVal >= 0.999)
+        // PROGRESS
+        Material progMat;
+        if (progressVal >= 0.9f)
         {
-            progressTMP.fontSharedMaterial = greenMaterial;
+            progMat = greenMaterial;
         }
         else
         {
-            progressTMP.fontSharedMaterial = redMaterial;
+            progMat = redMaterial;
         }
-
+        ApplyStatGroupStyle(progressGroup, progMat, $"{progressVal * 100f:F0}%");
     }
 
 
     public void SetTreatStats(string title, int onTarget, int offTarget, int timeRemaining, float progressVal)
     {
-        // Set text values
-
-
-        Debug.Log("In Treat Stats");
-
-
-
-        onTargetHitTMP.text = $"On Target Hits:    {onTarget}";
-
-        if (onTarget >= 23)
-        {
-            onTargetHitTMP.fontSharedMaterial = greenMaterial;
-        }
-        else
-        {
-            onTargetHitTMP.fontSharedMaterial = redMaterial;
-        }
-
-
-        offTargetHitTMP.text = $"Off Target Hits:   {offTarget}";
-        if (offTarget >= 15)
-        {
-            onTargetHitTMP.fontSharedMaterial = redMaterial;
-        }
-        else if (offTarget >= 10)
-        {
-            onTargetHitTMP.fontSharedMaterial = amberMaterial;
-        }
-        else if (offTarget == 0)
-        {
-            onTargetHitTMP.fontSharedMaterial = greenMaterial;
-        }
-
-
-        timeRemainingTMP.text = $"Time Remaining:    {timeRemaining}s";
-
-        if (timeRemaining >= 15)
-        {
-            timeRemainingTMP.fontSharedMaterial = greenMaterial;
-        }
-        else if (timeRemaining > 0)
-        {
-            timeRemainingTMP.fontSharedMaterial = amberMaterial;
-        }
-        else
-        {
-            timeRemainingTMP.fontSharedMaterial = redMaterial;
-        }
-
-        progressTMP.text = $"Progress:         {progressVal * 100f:F0}%";
-
-        if (progressVal >= 0.999)
-        {
-            progressTMP.fontSharedMaterial = greenMaterial;
-        }
-        else
-        {
-            progressTMP.fontSharedMaterial = redMaterial;
-        }
-
+        Debug.Log("Set Treat unset");
     }
+
+    private void ApplyStatGroupStyle(GameObject group, Material mat, string text)
+    {
+        TextMeshProUGUI[] tmps = group.GetComponentsInChildren<TextMeshProUGUI>(true);
+        foreach (var tmp in tmps)
+        {
+            tmp.fontSharedMaterial = mat;
+            if (tmp.gameObject.name == "Val")
+            {
+                tmp.text = text;
+            }
+        }
+
+        // Safely fetch face color for TMP shader
+        if (mat.HasProperty(ShaderUtilities.ID_FaceColor))
+        {
+            Color faceColor = mat.GetColor(ShaderUtilities.ID_FaceColor);
+            Image img = group.GetComponentInChildren<Image>(true);
+            if (img != null)
+            {
+                img.color = faceColor;
+            }
+        }
+    }
+
+
 }

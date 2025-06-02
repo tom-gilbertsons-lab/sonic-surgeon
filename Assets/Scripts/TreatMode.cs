@@ -49,6 +49,7 @@ public class TreatMode : MonoBehaviour
 
     private void Awake()
     {
+
         sceneEffects = GetComponent<SceneEffects>();
         // counting the sub nuclei 
         foreach (Transform child in target.transform)
@@ -56,6 +57,7 @@ public class TreatMode : MonoBehaviour
             totalSubNuclei++;
         }
         treatModeController = gameManagerObject.GetComponent<TreatModeController>();
+        EnableTreatCollider(false);
     }
 
 
@@ -125,10 +127,10 @@ public class TreatMode : MonoBehaviour
     private IEnumerator TreatModeSuccess()
     {
         Debug.Log("In treatMode success");
-        DisableTreatCollider();
+        EnableTreatCollider(false);
 
         yield return new WaitForSeconds(1.0f);
-        treatModeController.HideCountdownAndProgress();
+        treatModeController.HideOverlays();
 
         yield return StartCoroutine(TreatCompleteSequence());
 
@@ -192,10 +194,10 @@ public class TreatMode : MonoBehaviour
 
 
 
-    private void DisableTreatCollider()
+    private void EnableTreatCollider(bool enable)
     {
         BoxCollider2D treatCollider = GetComponent<BoxCollider2D>();
-        treatCollider.enabled = false;
+        treatCollider.enabled = enable;
     }
 
     private void SpawnVFX()

@@ -5,25 +5,33 @@ using TMPro;
 
 public class PlanModeController : MonoBehaviour
 {
-    // Game Mananger Objects 
+
+    [Header("Game Manager")]
     public GameObject gameManagerObject;
     private GameManager gameManager;
     public CanvasEffects canvasEffects;
+    private LANMotorCtrl lANMotorCtrl;
 
 
     // Canvas Objects
-    public GameObject planIntroCanvas;
-    private Intro planIntro;
+    [Header("PlanModeUI")]
+    public GameObject modeUI;
+    public GameObject introCanvas;
+    private Intro intro;
     public GameObject msg1;
     public GameObject msg2;
     public GameObject msg3;
-
-
     public GameObject progressDisplayObj;
     private ProgressIndicator progressDisplay;
-
     public GameObject countdownDisplay;
     private CountdownTimer countdownTimer;
+
+
+    [Header("Report Stats")]
+    public int timeRemaining;
+    public float progressVal;
+    public int onTargetTaps = 0;
+    public int offTargetTaps = 0;
 
 
     public bool planModeComplete;
@@ -32,19 +40,14 @@ public class PlanModeController : MonoBehaviour
     private PlanMode planMode;
 
 
-
-    public int timeRemaining;
-    public float progressVal;
-    public int onTargetTaps = 0;
-    public int offTargetTaps = 0;
-
     void Awake()
-    {
+    { // script refs 
         gameManager = gameManagerObject.GetComponent<GameManager>();
         progressDisplay = progressDisplayObj.GetComponent<ProgressIndicator>();
         countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
-        planIntro = planIntroCanvas.GetComponent<Intro>();
+        intro = introCanvas.GetComponent<Intro>();
         planMode = planSceneObj.GetComponent<PlanMode>();
+        lANMotorCtrl = gameManagerObject.GetComponent<LANMotorCtrl>();
     }
 
     private void Update()
@@ -57,26 +60,29 @@ public class PlanModeController : MonoBehaviour
         }
     }
 
+
     public void StartIntro()
     {
-        planSceneObj.SetActive(true);
-        planIntroCanvas.SetActive(true);
-        StartCoroutine(planIntro.RunIntro(StartPlanMode));
-
+        modeUI.SetActive(true);
+        StartCoroutine(StartIntroRoutine());
     }
+
+    private IEnumerator StartIntroRoutine()
+    {
+        yield return StartCoroutine(canvasEffects.FadeInRoutine(introCanvas, 1f, fadeChildrenGraphics: true));
+        yield return StartCoroutine(intro.RunIntro(StartPlanMode));
+    }
+
+
     public void StartPlanMode()
     {
-        if (!planSceneObj.activeSelf)
-        {
-            planSceneObj.SetActive(true);
-        }
-
-        SetUpProgressIndicator();
-        SetUpCountdownIndicator();
-        FadeInfoBox(planIntroCanvas);
+        StartCoroutine(canvasEffects.FadeOutRoutine(introCanvas, 1.0f, fadeChildrenGraphics: true));
+        SetUpOverlays();
         planMode.StartPlan();
-
+        lANMotorCtrl.StartShake();
     }
+
+
 
     public void EndPlanMode()
     {
@@ -90,6 +96,7 @@ public class PlanModeController : MonoBehaviour
         }
 
         gameManager.EndPlanMode();
+        modeUI.SetActive(false);
 
     }
 
@@ -103,10 +110,10 @@ public class PlanModeController : MonoBehaviour
         countdownTimer.CancelCountdown();
     }
 
-    public void HideCountdownAndProgress()
+    public void HideOverlays()
     {
-        gameManager.FadeOutAndDeactivateUI(countdownDisplay, 0.5f);
-        gameManager.FadeOutAndDeactivateUI(progressDisplayObj, 0.5f);
+        canvasEffects.FadeOut(countdownDisplay, 0.5f, fadeChildrenGraphics: true);
+        canvasEffects.FadeOut(progressDisplayObj, 0.5f, fadeChildrenGraphics: true);
     }
 
 
@@ -118,17 +125,14 @@ public class PlanModeController : MonoBehaviour
     }
 
     // Canvas Overlay Methods 
-    private void SetUpProgressIndicator()
+    private void SetUpOverlays()
     {
         progressDisplayObj.SetActive(true);
-
-    }
-
-    private void SetUpCountdownIndicator()
-    {
         countdownDisplay.SetActive(true);
         countdownTimer.StartCountdown();
+
     }
+
 
     public void UpdateProgress(int stage)
     {
@@ -136,15 +140,18 @@ public class PlanModeController : MonoBehaviour
         {
             case 1:
                 progressDisplay.progress = 0.33f;
-                StartCoroutine(InfoBox(msg1));
+                progressVal = 0.33f;
+                StartCoroutine(InfoBox(msg1, false));
                 break;
             case 2:
                 progressDisplay.progress = 0.66f;
-                StartCoroutine(InfoBox(msg2));
+                progressVal = 0.66f;
+                StartCoroutine(InfoBox(msg2, false));
                 break;
             case 3:
                 progressDisplay.progress = 1f;
-                StartCoroutine(InfoBox(msg3));
+                progressVal = 1f;
+                StartCoroutine(InfoBox(msg3, true));
                 break;
         }
 
@@ -152,19 +159,22 @@ public class PlanModeController : MonoBehaviour
     }
 
 
-    public IEnumerator InfoBox(GameObject obj)
+    public IEnumerator InfoBox(GameObject obj, bool end)
     {
-        gameManager.ActivateAndFadeInUI(obj, 0.3f);
-        yield return new WaitForSeconds(2f);
-        FadeInfoBox(obj);
+
+        if (!end)
+        {
+            yield return canvasEffects.FadeInRoutine(obj, 0.25f, fadeChildrenGraphics: true);
+            yield return new WaitForSeconds(1f);
+            yield return canvasEffects.FadeOutRoutine(obj, 0.25f, fadeChildrenGraphics: true);
+        }
+        else
+        {
+            yield return canvasEffects.FadeInRoutine(obj, 0.5f, fadeChildrenGraphics: true);
+            yield return new WaitForSeconds(2f);
+            yield return canvasEffects.FadeOutRoutine(obj, 0.25f, fadeChildrenGraphics: true);
+        }
     }
 
-    private void FadeInfoBox(GameObject obj)
-    {
-        // Before starting coroutine
-        Outline outline = obj.GetComponentInChildren<Outline>();
-        if (outline != null) outline.enabled = false;
-        gameManager.FadeOutAndDeactivateUI(obj, 0.3f);
-    }
 }
 

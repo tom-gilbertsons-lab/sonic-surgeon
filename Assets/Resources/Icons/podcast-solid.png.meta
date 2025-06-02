@@ -185,7 +185,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      podcast-solid_0: 6504687516075183193
+      podcast-solid_1: -1855935155150910062
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
