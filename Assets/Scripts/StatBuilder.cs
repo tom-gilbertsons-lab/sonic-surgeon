@@ -77,7 +77,61 @@ public class StatBuilder : MonoBehaviour
 
     public void SetTreatStats(string title, int onTarget, int offTarget, int timeRemaining, float progressVal)
     {
-        Debug.Log("Set Treat unset");
+        // ON TARGET
+        Material onTargetMat;
+        if (onTarget >= 3)
+        {
+            onTargetMat = greenMaterial;
+        }
+        else
+        {
+            onTargetMat = redMaterial;
+        }
+        ApplyStatGroupStyle(onTargetGroup, onTargetMat, onTarget.ToString());
+
+        // OFF TARGET
+        Material offTargetMat;
+        if (offTarget == 0)
+        {
+            offTargetMat = greenMaterial;
+        }
+        else if (offTarget < 8)
+        {
+            offTargetMat = amberMaterial;
+        }
+        else
+        {
+            offTargetMat = redMaterial;
+        }
+        ApplyStatGroupStyle(offTargetGroup, offTargetMat, offTarget.ToString());
+
+        // TIME REMAINING
+        Material timeMat;
+        if (timeRemaining >= 15)
+        {
+            timeMat = greenMaterial;
+        }
+        else if (timeRemaining > 0)
+        {
+            timeMat = amberMaterial;
+        }
+        else
+        {
+            timeMat = redMaterial;
+        }
+        ApplyStatGroupStyle(timeRemainingGroup, timeMat, timeRemaining + "s");
+
+        // PROGRESS
+        Material progMat;
+        if (progressVal >= 0.9f)
+        {
+            progMat = greenMaterial;
+        }
+        else
+        {
+            progMat = redMaterial;
+        }
+        ApplyStatGroupStyle(progressGroup, progMat, $"{progressVal * 100f:F0}%");
     }
 
     private void ApplyStatGroupStyle(GameObject group, Material mat, string text)

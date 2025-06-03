@@ -11,7 +11,7 @@ public class TreatModeController : MonoBehaviour
     public GameObject gameManagerObject;
     private GameManager gameManager;
     public CanvasEffects canvasEffects;
-    private LANMotorCtrl lANMotorCtrl;
+    private CRSTScale crstScale;
 
 
     // Canvas Objects
@@ -29,10 +29,6 @@ public class TreatModeController : MonoBehaviour
     public GameObject countdownDisplay;
     private CountdownTimer countdownTimer;
 
-
-    public GameObject progress;
-    private TreatProgress treatProgress;
-
     public GameObject treatSceneObj;
 
     public int timeRemaining;
@@ -49,10 +45,8 @@ public class TreatModeController : MonoBehaviour
         countdownTimer = countdownDisplay.GetComponent<CountdownTimer>();
         progressDisplay = progressDisplayObj.GetComponent<ProgressIndicator>();
         intro = introCanvas.GetComponent<Intro>();
-        treatProgress = progress.GetComponent<TreatProgress>();
-        lANMotorCtrl = gameManagerObject.GetComponent<LANMotorCtrl>();
         treatSceneObj.GetComponent<BoxCollider2D>().enabled = false;
-
+        crstScale = gameManagerObject.GetComponent<CRSTScale>();
     }
 
 
@@ -99,8 +93,6 @@ public class TreatModeController : MonoBehaviour
     public void DeactivateTreatMode()
     {
         treatSceneObj.SetActive(false);
-        progress.SetActive(false);
-        countdownDisplay.SetActive(false);
     }
 
     public void StopCountdown()
@@ -136,29 +128,36 @@ public class TreatModeController : MonoBehaviour
 
     }
 
+
+    // this needs fixed:::: 
+
     public void UpdateProgress(float progress, int dosesDelivered)
     {
         progressVal = progress;
-        Debug.Log(progressVal.ToString());
-        treatProgress.ShowProgress(dosesDelivered);
+        progressDisplay.progress = progress;
+        progressDisplay.ApplyProgress();
 
-
-        if (progressVal > 0.99f && lastShakeLevel != 0)
-        {
-            lANMotorCtrl.StopShake();
-            lastShakeLevel = 0;
-        }
-        else if (progressVal > 0.5f && progressVal <= 0.99f && lastShakeLevel != 1)
-        {
-            //lANMotorCtrl.ShakeLo();
-            lastShakeLevel = 1;
-        }
-        else if (progressVal <= 0.5f && lastShakeLevel != 2)
-        {
-            //lANMotorCtrl.ShakeMid();
-            lastShakeLevel = 2;
-        }
+        //if (progressVal > 0.99f && lastShakeLevel != 0)
+        //{
+        //    //lANMotorCtrl.StopShake();
+        //    lastShakeLevel = 0;
+        //}
+        //else if (progressVal > 0.5f && progressVal <= 0.99f && lastShakeLevel != 1)
+        //{
+        //    //lANMotorCtrl.ShakeLo();
+        //    lastShakeLevel = 1;
+        //}
+        //else if (progressVal <= 0.5f && lastShakeLevel != 2)
+        //{
+        //    //lANMotorCtrl.ShakeMid();
+        //    lastShakeLevel = 2;
+        //}
+        //progressDisplay.ApplyProgress();
     }
+
+
+
+
 }
 
 

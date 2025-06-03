@@ -18,17 +18,22 @@ public class GameManager : MonoBehaviour
     public GameObject planFailScreen;
     public GameObject endGameScreen;
 
-    // Stats at the end: 
+
+
+    // Stats at the end:
+    [Header("PlanStats")]
     public int planOnTarget;
     public int planOffTarget;
     public int planTimeRemaining;
     public float planProgressVal;
-
+    [Header("TreatStats")]
     public int treatOnTarget;
     public int treatOffTarget;
     public int treatTimeRemaining;
     public float treatProgressVal;
 
+
+    public bool lanMotor;
 
     private void Awake()
     {

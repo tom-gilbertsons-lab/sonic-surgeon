@@ -159,21 +159,9 @@ public class TreatMode : MonoBehaviour
         SpriteRenderer vimSR = target.GetComponent<SpriteRenderer>();
         vimSR.enabled = true;
         Material mat = vimSR.material;
-
-        // Phase 1: pulse 0.3 → 1 → 0.3 twice
-        //for (int i = 0; i < 2; i++)
-        //{
         yield return StartCoroutine(PulseGlow(mat, 0.3f, 1f, 1f));
-        yield return StartCoroutine(PulseGlow(mat, 1f, 0.3f, 1f));
-        // }
 
-        // Phase 2: ramp to 3
-        yield return StartCoroutine(PulseGlow(mat, 0.3f, 3f, 1f));
-
-        // Phase 3: fade to 0
-        //yield return StartCoroutine(PulseGlow(mat, 3f, 0f, 1f));
     }
-
 
 
     private IEnumerator PulseGlow(Material mat, float from, float to, float dur)
@@ -182,16 +170,13 @@ public class TreatMode : MonoBehaviour
         while (t < dur)
         {
             t += Time.deltaTime;
-            float val = Mathf.Lerp(from, to, t / dur);
-            mat.SetFloat("_GlowStrength", val);
+            float progress = Mathf.Clamp01(t / dur);
+            float eased = Mathf.SmoothStep(from, to, progress);
+            mat.SetFloat("_GlowStrength", eased);
             yield return null;
         }
         mat.SetFloat("_GlowStrength", to);
     }
-
-
-
-
 
 
     private void EnableTreatCollider(bool enable)

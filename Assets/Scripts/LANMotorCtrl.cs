@@ -1,62 +1,65 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
-using TMPro;
-using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 
 public class LANMotorCtrl : MonoBehaviour
 {
     //rPI
 
-    public void StartShake()
+    public void crst4()
     {
-        Debug.Log("Shake Begin");
-        StartCoroutine(SendStartShake());
+        StartCoroutine(SendCRST4());
     }
 
-    private IEnumerator SendStartShake()
+    private IEnumerator SendCRST4()
     {
-        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:5000/begin");
+        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:5000/crst4");
         yield return request.SendWebRequest();
     }
 
-    public void StopShake()
+    public void crst3()
     {
-        Debug.Log("Shake Stop");
-        StartCoroutine(SendStopShake());
+        StartCoroutine(SendCRST3());
     }
 
-    private IEnumerator SendStopShake()
+    private IEnumerator SendCRST3()
     {
-        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:5000/stop");
+        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:5000/crts3");
         yield return request.SendWebRequest();
-        // Optional: Add error checking here if needed
     }
 
-    public void ShakeMid()
+    public void crst2()
     {
-        Debug.Log("Shake Mid");
-        StartCoroutine(SendMidShake());
+        StartCoroutine(SendCRST2());
     }
 
-    private IEnumerator SendMidShake()
+    private IEnumerator SendCRST2()
     {
-        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:5000/mid");
+        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:5000/crts2");
         yield return request.SendWebRequest();
-        // Optional: Add error checking here if needed
     }
 
-    public void ShakeLo()
+    public void crst1()
     {
-        StartCoroutine(SendLoShake());
+        StartCoroutine(SendCRST1());
     }
 
-    private IEnumerator SendLoShake()
+    private IEnumerator SendCRST1()
     {
-        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:5000/lo");
+        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:5000/crts2");
         yield return request.SendWebRequest();
-        // Optional: Add error checking here if needed
+    }
+
+
+    public void crst0()
+    {
+        StartCoroutine(SendCRST0());
+    }
+
+    private IEnumerator SendCRST0()
+    {
+        UnityWebRequest request = UnityWebRequest.Get("http://192.168.8.165:5000/crts2");
+        yield return request.SendWebRequest();
     }
 
 

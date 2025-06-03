@@ -11,7 +11,7 @@ public class ProgressIndicator : MonoBehaviour
     public Color transducerColour = Color.white;
 
 
-    public void Start()
+    public void Awake()
     {
         Transform transducer = transform.Find("Outer");
         // Set outer colour
@@ -21,6 +21,18 @@ public class ProgressIndicator : MonoBehaviour
             Renderer transducerRend = child.GetComponent<Renderer>();
             transducerRend.material.color = transducerColour;
         }
+
+        for (int i = 1; i <= 8; i++)
+        {
+            Transform lvl = transform.Find("Lvl" + i);
+            foreach (Transform child in lvl)
+            {
+                Renderer rend = child.GetComponent<Renderer>();
+                rend.material.color = colourOff;
+            }
+        }
+
+        transform.Find("Complete").gameObject.SetActive(false);
 
     }
 
@@ -38,7 +50,7 @@ public class ProgressIndicator : MonoBehaviour
         }
 
         // Show complete object only when progress is full
-        transform.Find("Complete").gameObject.SetActive(progress >= 1f);
+        transform.Find("Complete").gameObject.SetActive(progress >= 0.99f);
     }
 
 }

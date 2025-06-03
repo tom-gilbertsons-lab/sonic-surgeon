@@ -159,6 +159,26 @@ public class CanvasEffects : MonoBehaviour
         yield return StartCoroutine(FadeCanvasGroup(cg, 0f, 1f, duration, false, manualDeactivate, fadeChildrenGraphics));
     }
 
+
+    public IEnumerator InfoBox(GameObject obj, bool end)
+    {
+
+        if (!end)
+        {
+            yield return FadeInRoutine(obj, 0.4f, fadeChildrenGraphics: true);
+            yield return new WaitForSeconds(0.7f);
+            yield return FadeOutRoutine(obj, 0.4f, fadeChildrenGraphics: true);
+        }
+        else
+        {
+            yield return FadeInRoutine(obj, 0.2f, fadeChildrenGraphics: true);
+            yield return new WaitForSeconds(1.5f);
+            yield return FadeOutRoutine(obj, 0.4f, fadeChildrenGraphics: true);
+        }
+    }
+
+
+
     public IEnumerator FadeCanvasGroup(CanvasGroup cg, float from, float to, float duration,
                                    bool deactivateAfter = false,
                                    GameObject[] manualDeactivate = null,
@@ -326,147 +346,6 @@ public class CanvasEffects : MonoBehaviour
             cg.gameObject.SetActive(false);
     }
 
-    //public IEnumerator FadeCanvasGroup(CanvasGroup cg, float from, float to, float duration,
-    //                               bool deactivateAfter = false,
-    //                               GameObject[] manualDeactivate = null,
-    //                               bool fadeChildrenGraphics = false)
-    //{
-    //    if (manualDeactivate != null)
-    //    {
-    //        foreach (GameObject go in manualDeactivate)
-    //        {
-    //            if (go == null) continue;
-    //            Outline outline = go.GetComponent<Outline>();
-    //            if (outline != null) outline.enabled = false;
-    //            go.SetActive(false);
-    //        }
-    //    }
-
-    //    cg.interactable = false;
-    //    cg.blocksRaycasts = false;
-    //    cg.alpha = from;
-
-    //    Graphic[] graphics = null;
-    //    Outline[] outlines = null;
-    //    Color baseOutlineColor = Color.white;
-
-    //    if (fadeChildrenGraphics)
-    //    {
-    //        graphics = cg.GetComponentsInChildren<Graphic>(includeInactive: true);
-    //        outlines = cg.GetComponentsInChildren<Outline>(includeInactive: true);
-
-    //        if (outlines.Length > 0)
-    //            baseOutlineColor = outlines[0].effectColor;
-
-    //        float initialVisual = SnowballFade(from);
-    //        foreach (var g in graphics)
-    //        {
-    //            if (g != null)
-    //            {
-    //                Color baseColor = g.color;
-    //                baseColor.a = initialVisual;
-    //                g.color = baseColor;
-    //            }
-    //        }
-
-    //        foreach (var o in outlines)
-    //        {
-    //            if (o != null)
-    //            {
-    //                float oa = (from > to) ? 1f : 0f;
-    //                o.effectColor = new Color(baseOutlineColor.r, baseOutlineColor.g, baseOutlineColor.b, oa);
-    //            }
-    //        }
-    //    }
-
-    //    float elapsed = 0f;
-    //    float outlineFadeTime = duration * 0.1f;
-
-    //    while (elapsed < duration)
-    //    {
-    //        elapsed += Time.deltaTime;
-    //        float t = Mathf.Clamp01(elapsed / duration);
-    //        float easedT = t * t * (3f - 2f * t);
-    //        float currentAlpha = Mathf.Lerp(from, to, easedT);
-    //        cg.alpha = currentAlpha;
-
-    //        if (fadeChildrenGraphics && graphics != null)
-    //        {
-    //            float visual = SnowballFade(currentAlpha);
-    //            foreach (var g in graphics)
-    //            {
-    //                if (g != null)
-    //                {
-    //                    Color original = g.color;
-    //                    g.color = new Color(original.r, original.g, original.b, visual);
-    //                }
-    //            }
-    //        }
-
-    //        if (fadeChildrenGraphics && outlines != null)
-    //        {
-    //            float oAlpha = 0f;
-    //            if (from > to)
-    //            {
-    //                // Fade OUT: outline fades quickly at start
-    //                oAlpha = Mathf.Lerp(1f, 0f, Mathf.Clamp01(elapsed / outlineFadeTime));
-    //            }
-    //            else
-    //            {
-    //                // Fade IN: outline fades quickly at end
-    //                float fadeInStart = duration - outlineFadeTime;
-    //                if (elapsed >= fadeInStart)
-    //                {
-    //                    float p = (elapsed - fadeInStart) / outlineFadeTime;
-    //                    oAlpha = Mathf.Lerp(0f, 1f, Mathf.Clamp01(p));
-    //                }
-    //            }
-
-    //            foreach (var o in outlines)
-    //            {
-    //                if (o != null)
-    //                    o.effectColor = new Color(baseOutlineColor.r, baseOutlineColor.g, baseOutlineColor.b, oAlpha);
-    //            }
-    //        }
-
-    //        yield return null;
-    //    }
-
-    //    cg.alpha = to;
-
-    //    if (fadeChildrenGraphics && graphics != null)
-    //    {
-    //        float visualFinal = SnowballFade(to);
-    //        foreach (var g in graphics)
-    //        {
-    //            if (g != null)
-    //            {
-    //                Color c = g.color;
-    //                c.a = visualFinal;
-    //                g.color = c;
-    //            }
-    //        }
-    //    }
-
-    //    if (fadeChildrenGraphics && outlines != null)
-    //    {
-    //        float finalAlpha = (to > from) ? 1f : 0f;
-    //        foreach (var o in outlines)
-    //        {
-    //            if (o != null)
-    //                o.effectColor = new Color(baseOutlineColor.r, baseOutlineColor.g, baseOutlineColor.b, finalAlpha);
-    //        }
-    //    }
-
-    //    if (to > 0.01f)
-    //    {
-    //        cg.interactable = true;
-    //        cg.blocksRaycasts = true;
-    //    }
-
-    //    if (deactivateAfter && to == 0f)
-    //        cg.gameObject.SetActive(false);
-    //}
 
     private float SnowballFade(float a)
     {

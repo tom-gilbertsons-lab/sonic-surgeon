@@ -70,12 +70,12 @@ public class PlanMode : MonoBehaviour
     private IEnumerator PlanModeSuccess()
     {
         planModeController.StopCountdown();
+        planModeController.UpdateProgress(3);
         DeactivateAllRounds();
         yield return new WaitForSeconds(1f);
-        yield return StartCoroutine(GrowInX(targetComplete, 1.5f));
+        StartCoroutine(GrowInX(targetComplete, 1.5f));
         planModeController.HideOverlays();
-        planModeController.UpdateProgress(3);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.3f);
 
         yield return StartCoroutine(sceneEffects.FadeOutSceneThen(1.0f, () =>
         {
