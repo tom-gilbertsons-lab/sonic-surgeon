@@ -5,40 +5,117 @@ using System.Collections.Generic;
 public class DrawCRST : MonoBehaviour
 {
     public LineRenderer lineRenderer;
-    public float drawDuration = 5f;
-    public int subdivisions = 10; // more = smoother
+    public float drawDuration = 15f;
+    public int subdivisions = 10;
+    [Range(0, 4)] public int tremorLevel = 0;
 
     private List<Vector3> basePoints = new List<Vector3>();
     private List<Vector3> smoothedPoints = new List<Vector3>();
 
     void Start()
     {
-        // Get original points
         foreach (Transform child in GetComponentsInChildren<Transform>())
         {
             if (child == transform) continue;
             basePoints.Add(child.localPosition);
         }
 
-        // Generate smooth points
         smoothedPoints = GenerateCatmullRom(basePoints, subdivisions);
 
-        // Start animated draw
         lineRenderer.positionCount = 0;
-        StartCoroutine(DrawLine());
+        StartCoroutine(DrawTrace());
     }
 
-    IEnumerator DrawLine()
+    IEnumerator DrawTrace()
     {
-        int total = smoothedPoints.Count;
-        float delay = drawDuration / total;
+        List<Vector3> segment = new List<Vector3>();
+        float delay = drawDuration / smoothedPoints.Count;
 
-        for (int i = 0; i < total; i++)
+        for (int i = 0; i < smoothedPoints.Count; i++)
         {
-            lineRenderer.positionCount = i + 1;
-            lineRenderer.SetPosition(i, smoothedPoints[i]);
+            if (ShouldSkipPoint(tremorLevel)) continue;
+
+            Vector3 point = smoothedPoints[i];
+
+            // For Level 4: very rare disconnected scratch marks
+            if (tremorLevel == 4)
+            {
+                if (Random.value < 0.1f)
+                {
+                    int scratchLength = Random.Range(2, 4);
+                    List<Vector3> scratch = new List<Vector3>();
+                    for (int j = 0; j < scratchLength && i + j < smoothedPoints.Count; j++)
+                    {
+                        scratch.Add(smoothedPoints[i + j] + Random.insideUnitSphere * 0.1f);
+                    }
+
+                    foreach (var p in scratch)
+                    {
+                        segment.Add(p);
+                        lineRenderer.positionCount = segment.Count;
+                        lineRenderer.SetPositions(segment.ToArray());
+                        yield return new WaitForSeconds(delay);
+                    }
+
+                    segment.Clear();
+                    lineRenderer.positionCount = 0;
+                    i += scratchLength;
+                    continue;
+                }
+                else
+                {
+                    yield return new WaitForSeconds(delay);
+                    continue;
+                }
+            }
+
+            // For Level 3: occasional stroke break
+            if (tremorLevel == 3 && Random.value < 0.2f)
+            {
+                lineRenderer.positionCount = segment.Count;
+                lineRenderer.SetPositions(segment.ToArray());
+                segment.Clear();
+                lineRenderer.positionCount = 0;
+                yield return new WaitForSeconds(delay);
+                continue;
+            }
+
+            // All other levels
+            Vector3 trembled = ApplyTremorToPoint(point, tremorLevel);
+            segment.Add(trembled);
+            lineRenderer.positionCount = segment.Count;
+            lineRenderer.SetPositions(segment.ToArray());
             yield return new WaitForSeconds(delay);
         }
+    }
+
+
+    Vector3 ApplyTremorToPoint(Vector3 point, int level)
+    {
+        float r = 0f;
+
+        if (level == 1) r = 0.005f;
+        else if (level == 2) r = 0.02f;
+        else if (level == 3) r = 0.05f;
+        else if (level == 4) r = 0.08f;
+
+        if (r > 0f)
+            return point + Random.insideUnitSphere * r;
+
+        return point;
+    }
+
+    bool ShouldSkipPoint(int level)
+    {
+        if (level == 0) return false;
+
+        float skipChance = 0f;
+        if (level == 1) skipChance = 0.15f;
+        else if (level == 2) skipChance = 0.3f;
+        else if (level == 3) skipChance = 0.5f;
+        else if (level == 4) skipChance = 0.75f;
+
+        return Random.value < skipChance;
     }
 
     List<Vector3> GenerateCatmullRom(List<Vector3> points, int subdivisions)
@@ -65,7 +142,8 @@ public class DrawCRST : MonoBehaviour
             }
         }
 
-        result.Add(points[points.Count - 1]); // last point
+        result.Add(points[points.Count - 1]);
         return result;
     }
 }
+
