@@ -133,31 +133,23 @@ public class TreatModeController : MonoBehaviour
 
     public void UpdateProgress(float progress, int dosesDelivered)
     {
+        // update progress display
         progressVal = progress;
         progressDisplay.progress = progress;
         progressDisplay.ApplyProgress();
 
-        //if (progressVal > 0.99f && lastShakeLevel != 0)
-        //{
-        //    //lANMotorCtrl.StopShake();
-        //    lastShakeLevel = 0;
-        //}
-        //else if (progressVal > 0.5f && progressVal <= 0.99f && lastShakeLevel != 1)
-        //{
-        //    //lANMotorCtrl.ShakeLo();
-        //    lastShakeLevel = 1;
-        //}
-        //else if (progressVal <= 0.5f && lastShakeLevel != 2)
-        //{
-        //    //lANMotorCtrl.ShakeMid();
-        //    lastShakeLevel = 2;
-        //}
-        //progressDisplay.ApplyProgress();
+        if (progressVal > 0.99f) crstScale.CRST0();
+        else if (progressVal > 0.75f) crstScale.CRST1();
+        else if (progressVal > 0.50f) crstScale.CRST2();
+        else if (progressVal > 0.25f) crstScale.CRST3();
+        else crstScale.CRST4();
+
     }
 
-
-
-
 }
+
+
+
+
 
 

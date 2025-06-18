@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public GameObject planFailScreen;
     public GameObject endGameScreen;
 
+    public GameObject tremorScene;
 
 
     // Stats at the end:
@@ -56,6 +57,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator StartGameRoutine()
     {
         planModeController.planSceneObj.SetActive(true);
+        tremorScene.SetActive(true);
         //yield return canvasEffects.FadeOutRoutine(startScreen, 1.0f, fadeChildrenGraphics: true);
         StartCoroutine(canvasEffects.FadeOutRoutine(startScreen, 1.0f, fadeChildrenGraphics: true));
         yield return new WaitForSeconds(0.5f);

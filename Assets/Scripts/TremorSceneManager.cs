@@ -14,7 +14,7 @@ public class TremorSceneManager : MonoBehaviour
     [Header("CRST Traces")]
     public GameObject[] crstTraces;
 
-    private int currentTremorLevel = 0;
+    public int currentTremorLevel = 4;
     private int maxActiveTraces = 3;
     private Queue<TremorTraceRenderer> activeRenderers = new Queue<TremorTraceRenderer>();
 
