@@ -4,12 +4,7 @@ using System.Collections.Generic;
 
 public class TremorSceneManager : MonoBehaviour
 {
-    [Header("Buttons")]
-    public GameObject t0;
-    public GameObject t1;
-    public GameObject t2;
-    public GameObject t3;
-    public GameObject t4;
+
 
     [Header("CRST Traces")]
     public GameObject[] crstTraces;
@@ -18,9 +13,15 @@ public class TremorSceneManager : MonoBehaviour
     private int maxActiveTraces = 3;
     private Queue<TremorTraceRenderer> activeRenderers = new Queue<TremorTraceRenderer>();
 
-    void Start()
+    //void Start()
+    //{
+    //    StartCoroutine(Draw());
+    //}
+
+    private void OnEnable()
     {
         StartCoroutine(Draw());
+        Debug.Log("DRAW");
     }
 
     private IEnumerator Draw()
@@ -49,13 +50,6 @@ public class TremorSceneManager : MonoBehaviour
         }
     }
 
-    public void ClickedButton(int tremorLevel)
-    {
-        currentTremorLevel = tremorLevel;
-        string timestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-        Debug.Log($"[{timestamp}] Clicked {tremorLevel}");
-
-    }
 
     public int GetCurrentTremorLevel()
     {

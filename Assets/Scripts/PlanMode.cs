@@ -74,7 +74,7 @@ public class PlanMode : MonoBehaviour
         DeactivateAllRounds();
         yield return new WaitForSeconds(1f);
         StartCoroutine(GrowInX(targetComplete, 1.5f));
-        planModeController.HideOverlays();
+        //planModeController.HideOverlays();
         yield return new WaitForSeconds(0.3f);
 
         yield return StartCoroutine(sceneEffects.FadeOutSceneThen(1.0f, () =>

@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     public GameObject endGameScreen;
 
     public GameObject tremorScene;
+    public GameObject planScene;
+    public GameObject treatScene;
 
 
     // Stats at the end:
@@ -46,6 +48,9 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         startScreen.SetActive(true);
+        //tremorScene.SetActive(false);
+        treatScene.SetActive(false);
+        planScene.SetActive(false);
     }
 
 

@@ -23,13 +23,12 @@ public class Intro : MonoBehaviour
 
     public IEnumerator RunIntro(System.Action onDone)
     {
-        yield return StartCoroutine(canvasEffects.TypeTextFixed(titleText, titleTextStr, 0.15f));
+        yield return StartCoroutine(canvasEffects.TypeTextFixed(titleText, titleTextStr, 0.1f));
         yield return StartCoroutine(canvasEffects.TypeTextFixed(instructionText, instructionTextStr, 0.1f));
         yield return new WaitForSeconds(1f);
         yield return StartCoroutine(PromptCountdown());
         onDone?.Invoke();
     }
-
 
     public IEnumerator PromptCountdown()
     {
