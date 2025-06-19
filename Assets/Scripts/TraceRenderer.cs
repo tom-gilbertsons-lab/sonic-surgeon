@@ -43,7 +43,7 @@ public class TremorTraceRenderer : MonoBehaviour
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.widthMultiplier = 0.03f;
         lineRenderer.useWorldSpace = false;
-        lineRenderer.sortingOrder = 10;
+        lineRenderer.sortingOrder = 8;
         lineRenderer.startColor = darkPurple;
         lineRenderer.endColor = darkPurple;
 

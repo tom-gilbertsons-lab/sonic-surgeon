@@ -19,7 +19,10 @@ public class VimDose : MonoBehaviour
 
 
     private void Awake()
+
+
     {
+        Debug.Log("Awake");
         // on awake want them all transparent. 
         sr = GetComponent<SpriteRenderer>();
         sr.color = new Color(1f, 1f, 1f, 0f); // fully transparent
@@ -29,6 +32,9 @@ public class VimDose : MonoBehaviour
         treatMode = GetComponentInParent<TreatMode>();
         startColour = sr.color;
         treatedColour = sr.color;
+
+
+        Debug.Log(treatMode);
     }
 
 
@@ -58,6 +64,7 @@ public class VimDose : MonoBehaviour
 
     public void AccumulateDose()
     {
+
         if (doseCount >= treatMode.doseColours.Length) return;
 
         doseCount++;
@@ -80,6 +87,7 @@ public class VimDose : MonoBehaviour
 
     public bool IsMaxed()
     {
+        Debug.Log(treatMode);
         return doseCount >= treatMode.doseColours.Length;
     }
 }

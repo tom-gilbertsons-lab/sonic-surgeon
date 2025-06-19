@@ -63,10 +63,10 @@ public class GameManager : MonoBehaviour
     {
         planModeController.planSceneObj.SetActive(true);
         tremorScene.SetActive(true);
-        //yield return canvasEffects.FadeOutRoutine(startScreen, 1.0f, fadeChildrenGraphics: true);
         StartCoroutine(canvasEffects.FadeOutRoutine(startScreen, 1.0f, fadeChildrenGraphics: true));
         yield return new WaitForSeconds(0.5f);
         planModeController.StartIntro();
+
 
     }
 

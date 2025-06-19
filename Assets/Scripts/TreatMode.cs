@@ -15,7 +15,7 @@ public class TreatMode : MonoBehaviour
     public float delayBeforeFade = 0.7f;
     public float fadeDuration = 0.5f;
     public Material treatCompleteMaterial;
-    public GameObject treatCompleteVim;
+    //public GameObject treatCompleteVim;
 
     [ColorUsage(true, true)]
     public Color[] doseColours = new Color[] {
@@ -46,16 +46,15 @@ public class TreatMode : MonoBehaviour
     private SceneEffects sceneEffects;
 
 
-
     private void Awake()
     {
-
         sceneEffects = GetComponent<SceneEffects>();
-        // counting the sub nuclei 
-        foreach (Transform child in target.transform)
-        {
-            totalSubNuclei++;
-        }
+
+        // count every VimDose under VIM_LR (works no matter how deep they’re nested)
+        totalSubNuclei = target.GetComponentsInChildren<VimDose>().Length;
+
+
+
         treatModeController = gameManagerObject.GetComponent<TreatModeController>();
         EnableTreatCollider(false);
     }
@@ -63,7 +62,8 @@ public class TreatMode : MonoBehaviour
 
     private void OnMouseDown()
     {
-        // onClick make hotspot and check if we are near target 
+        // onClick make hotspot and check if we are near target
+        Debug.Log(totalSubNuclei.ToString());
         worldClick = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         TargetOverlap();
@@ -71,20 +71,18 @@ public class TreatMode : MonoBehaviour
 
     }
 
-
     private void TargetOverlap()
     {
         bool hitAnyTarget = false;
 
-        foreach (Transform child in target.transform)
+        foreach (VimDose vimSub in target.GetComponentsInChildren<VimDose>())
         {
-
-            VimDose vimSub = child.GetComponent<VimDose>();
+            Debug.Log(vimSub);
             if (vimSub == null || vimSub.IsMaxed())
                 continue;
 
             float targetRadius = vimSub.sr.bounds.extents.magnitude;
-            float distance = Vector2.Distance(worldClick, child.position);
+            float distance = Vector2.Distance(worldClick, vimSub.transform.position);
 
             if (distance <= targetRadius + hotspotRadius)
             {
@@ -92,16 +90,16 @@ public class TreatMode : MonoBehaviour
 
                 vimSub.AccumulateDose();
                 dosesDelivered++;
-                proportionTreated = (float)dosesDelivered / (3 * (float)totalSubNuclei);
+
+                proportionTreated = (float)dosesDelivered / (3 * totalSubNuclei);
                 treatModeController.UpdateProgress(proportionTreated, dosesDelivered);
 
                 if (vimSub.IsMaxed())
-                {
                     treatedSubNuclei++;
-                }
             }
         }
 
+        // feedback
         if (hitAnyTarget)
         {
             Debug.Log("On target");
@@ -113,16 +111,66 @@ public class TreatMode : MonoBehaviour
             treatModeController.OffTargetTaps();
         }
 
-
-
+        // only fires when **every** sub-nucleus on both sides is maxed
         if (treatedSubNuclei == totalSubNuclei)
         {
             treatmentComplete = true;
             treatModeController.StopCountdown();
             StartCoroutine(TreatModeSuccess());
         }
-
     }
+
+    //private void TargetOverlap()
+    //{
+    //    bool hitAnyTarget = false;
+
+    //    foreach (Transform child in target.transform)
+    //    {
+
+    //        VimDose vimSub = child.GetComponent<VimDose>();
+    //        if (vimSub == null || vimSub.IsMaxed())
+    //            continue;
+
+    //        float targetRadius = vimSub.sr.bounds.extents.magnitude;
+    //        float distance = Vector2.Distance(worldClick, child.position);
+
+    //        if (distance <= targetRadius + hotspotRadius)
+    //        {
+    //            hitAnyTarget = true;
+
+    //            vimSub.AccumulateDose();
+    //            dosesDelivered++;
+    //            proportionTreated = (float)dosesDelivered / (3 * (float)totalSubNuclei);
+    //            treatModeController.UpdateProgress(proportionTreated, dosesDelivered);
+
+    //            if (vimSub.IsMaxed())
+    //            {
+    //                treatedSubNuclei++;
+    //            }
+    //        }
+    //    }
+
+    //    if (hitAnyTarget)
+    //    {
+    //        Debug.Log("On target");
+    //        treatModeController.OnTargetTaps();
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("Off target");
+    //        treatModeController.OffTargetTaps();
+    //    }
+
+
+
+    //    if (treatedSubNuclei == totalSubNuclei)
+    //    {
+    //        treatmentComplete = true;
+    //        treatModeController.StopCountdown();
+    //        StartCoroutine(TreatModeSuccess());
+    //    }
+
+    //}
 
     private IEnumerator TreatModeSuccess()
     {
@@ -143,25 +191,44 @@ public class TreatMode : MonoBehaviour
 
     private IEnumerator TreatCompleteSequence()
     {
-        foreach (Transform child in target.transform)
+        foreach (VimDose vimSub in target.GetComponentsInChildren<VimDose>())
         {
-
-            SpriteRenderer sr = child.GetComponent<SpriteRenderer>();
-
+            SpriteRenderer sr = vimSub.GetComponent<SpriteRenderer>();
             sr.material = new Material(treatCompleteMaterial);
-            float dapple = Random.Range(0.1f, 0.4f);
 
-            yield return new WaitForSeconds(dapple); // delay between each
+            float dapple = Random.Range(0.1f, 0.4f);
+            yield return new WaitForSeconds(dapple);
         }
 
         yield return new WaitForSeconds(0.3f);
 
         SpriteRenderer vimSR = target.GetComponent<SpriteRenderer>();
         vimSR.enabled = true;
-        Material mat = vimSR.material;
-        yield return StartCoroutine(PulseGlow(mat, 0.3f, 1f, 1f));
-
+        yield return StartCoroutine(PulseGlow(vimSR.material, 0.3f, 1f, 1f));
     }
+
+
+    //private IEnumerator TreatCompleteSequence()
+    //{
+    //    foreach (Transform child in target.transform)
+    //    {
+
+    //        SpriteRenderer sr = child.GetComponent<SpriteRenderer>();
+
+    //        sr.material = new Material(treatCompleteMaterial);
+    //        float dapple = Random.Range(0.1f, 0.4f);
+
+    //        yield return new WaitForSeconds(dapple); // delay between each
+    //    }
+
+    //    yield return new WaitForSeconds(0.3f);
+
+    //    SpriteRenderer vimSR = target.GetComponent<SpriteRenderer>();
+    //    vimSR.enabled = true;
+    //    Material mat = vimSR.material;
+    //    yield return StartCoroutine(PulseGlow(mat, 0.3f, 1f, 1f));
+
+    //}
 
 
     private IEnumerator PulseGlow(Material mat, float from, float to, float dur)

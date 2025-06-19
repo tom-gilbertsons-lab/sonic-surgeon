@@ -36,8 +36,6 @@ public class TreatModeController : MonoBehaviour
     public int onTargetTaps = 0;
     public int offTargetTaps = 0;
 
-    private float lastShakeLevel = -1f;
-
 
     void Awake()
     {
@@ -129,7 +127,7 @@ public class TreatModeController : MonoBehaviour
     }
 
 
-    // this needs fixed:::: 
+
 
     public void UpdateProgress(float progress, int dosesDelivered)
     {
@@ -138,14 +136,45 @@ public class TreatModeController : MonoBehaviour
         progressDisplay.progress = progress;
         progressDisplay.ApplyProgress();
 
-        if (progressVal > 0.99f) crstScale.CRST0();
-        else if (progressVal > 0.75f) crstScale.CRST1();
-        else if (progressVal > 0.50f) crstScale.CRST2();
-        else if (progressVal > 0.25f) crstScale.CRST3();
-        else crstScale.CRST4();
+        if (progressVal > 0.99f)
+        {
+            crstScale.CRST0();
+            SetMessage(crst0);
+        }
+        else if (progressVal > 0.75f)
+        {
+            crstScale.CRST1();
+            SetMessage(crst1);
+        }
+        else if (progressVal > 0.50f)
+        {
+            crstScale.CRST2();
+            SetMessage(crst2);
+        }
+        else if (progressVal > 0.25f)
+        {
+            crstScale.CRST3();
+            SetMessage(crst3);
+        }
+        else
+        {
+            crstScale.CRST4();
+            SetMessage(crst4);
+        }
 
     }
 
+    private void SetMessage(GameObject liveMessage)
+    {
+        crst4.SetActive(false);
+        crst3.SetActive(false);
+        crst2.SetActive(false);
+        crst1.SetActive(false);
+        crst0.SetActive(false);
+
+        liveMessage.SetActive(true);
+
+    }
 }
 
 
