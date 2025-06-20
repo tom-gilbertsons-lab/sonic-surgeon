@@ -19315,7 +19315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   countdownClock: {fileID: 321849146}
-  duration: 30
+  duration: 45
   complete: 0
   timeRemaining: 0
 --- !u!114 &1110996276
