@@ -48,7 +48,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         startScreen.SetActive(true);
-        //tremorScene.SetActive(false);
         treatScene.SetActive(false);
         planScene.SetActive(false);
     }
@@ -92,7 +91,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         planModeController.DeactivatePlanMode();
         yield return new WaitForSeconds(2f);
-        yield return canvasEffects.FadeOutRoutine(planSuccessScreen, 1.0f, fadeChildrenGraphics: true);
+        yield return canvasEffects.FadeOutRoutine(planSuccessScreen, 0.5f, fadeChildrenGraphics: true);
         treatModeController.treatSceneObj.SetActive(true);
         treatModeController.StartIntro();
     }

@@ -13,15 +13,10 @@ public class TremorSceneManager : MonoBehaviour
     private int maxActiveTraces = 4;
     private Queue<TremorTraceRenderer> activeRenderers = new Queue<TremorTraceRenderer>();
 
-    //void Start()
-    //{
-    //    StartCoroutine(Draw());
-    //}
 
-    private void OnEnable()
+    private void Start()
     {
         StartCoroutine(Draw());
-        Debug.Log("DRAW");
     }
 
     private IEnumerator Draw()

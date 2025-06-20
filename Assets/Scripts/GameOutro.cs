@@ -7,10 +7,9 @@ public class GameOutro : MonoBehaviour
 {
     public GameObject gameManagerObject;
     private GameManager gameManager;
-    public GameObject statsBoxLeft;
-    public GameObject statsBoxRight;
-    private StatBuilder statBuilderL;
-    private StatBuilder statBuilderR;
+    public GameObject statsBox;
+    private StatBuilder statBuilder;
+
 
     public Material greenMaterial;
     public Material amberMaterial;
@@ -18,26 +17,19 @@ public class GameOutro : MonoBehaviour
 
     public TextMeshProUGUI titleTMP;
 
-    private float progress;
-
 
     void Awake()
     {
-        statBuilderL = statsBoxLeft.GetComponent<StatBuilder>();
-        statBuilderR = statsBoxRight.GetComponent<StatBuilder>();
+        statBuilder = statsBox.GetComponent<StatBuilder>();
         gameManager = gameManagerObject.GetComponent<GameManager>();
     }
 
     public void OnEnable()
     {
-        progress = gameManager.treatProgressVal;
-        Debug.Log("Progress " + progress.ToString());
-        // build the stats boxes
-        statsBoxLeft.SetActive(true);
-        statBuilderL.SetPlanStats(gameManager.planOnTarget, gameManager.planOffTarget, gameManager.planTimeRemaining, gameManager.planProgressVal);
 
-        statsBoxRight.SetActive(true);
-        statBuilderR.SetTreatStats("Operation Note:", gameManager.treatOnTarget, gameManager.treatOffTarget, gameManager.treatTimeRemaining, gameManager.treatProgressVal);
+
+        statsBox.SetActive(true);
+        statBuilder.SetTreatStats("Operation Note:", gameManager.treatOnTarget, gameManager.treatOffTarget, gameManager.treatTimeRemaining, gameManager.treatProgressVal);
 
         if (gameManager.treatProgressVal > 0.99)
         {

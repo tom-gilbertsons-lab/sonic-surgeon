@@ -36,6 +36,8 @@ public class TreatModeController : MonoBehaviour
     public int onTargetTaps = 0;
     public int offTargetTaps = 0;
 
+    private GameObject currentMsg;
+
 
     void Awake()
     {
@@ -77,7 +79,9 @@ public class TreatModeController : MonoBehaviour
     {
         StartCoroutine(canvasEffects.FadeOutRoutine(introCanvas, 1.0f, fadeChildrenGraphics: true));
         SetUpOverlays();
+        SetMessage(crst4);
         treatSceneObj.GetComponent<BoxCollider2D>().enabled = true;
+
     }
 
 
@@ -86,6 +90,7 @@ public class TreatModeController : MonoBehaviour
     public void EndTreatMode()
     {
         gameManager.EndTreatMode();
+        modeUI.SetActive(false);
     }
 
     public void DeactivateTreatMode()
@@ -96,12 +101,6 @@ public class TreatModeController : MonoBehaviour
     public void StopCountdown()
     {
         countdownTimer.CancelCountdown();
-    }
-
-    public void HideOverlays()
-    {
-        canvasEffects.FadeOut(countdownDisplay, 0.5f, fadeChildrenGraphics: true);
-        canvasEffects.FadeOut(progressDisplayObj, 0.5f, fadeChildrenGraphics: true);
     }
 
     public void OnTargetTaps()
@@ -166,15 +165,25 @@ public class TreatModeController : MonoBehaviour
 
     private void SetMessage(GameObject liveMessage)
     {
-        crst4.SetActive(false);
-        crst3.SetActive(false);
-        crst2.SetActive(false);
-        crst1.SetActive(false);
-        crst0.SetActive(false);
+        // already showing this one?  nothing to do
+        if (liveMessage == currentMsg) return;
 
-        liveMessage.SetActive(true);
+        // fade the old overlay out (if any)
+        if (currentMsg != null)
+            StartCoroutine(canvasEffects.FadeOutRoutine(
+                currentMsg,                     // object to fade
+                0.25f,                          // duration seconds
+                fadeChildrenGraphics: true));   // use your nice snowball-fade
 
+        // remember & fade the new overlay in
+        currentMsg = liveMessage;
+        currentMsg.SetActive(true);             // FadeInRoutine expects it active
+        StartCoroutine(canvasEffects.FadeInRoutine(
+            currentMsg,
+            0.25f,
+            fadeChildrenGraphics: true));
     }
+
 }
 
 

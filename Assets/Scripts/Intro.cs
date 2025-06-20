@@ -32,7 +32,7 @@ public class Intro : MonoBehaviour
 
     public IEnumerator PromptCountdown()
     {
-        string[] countdown = { "3", "2", "1", "Go!" };
+        string[] countdown = { "3", "2", "1", "Go→" };
         foreach (string step in countdown)
         {
             prompt.text = step;

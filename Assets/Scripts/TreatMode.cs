@@ -120,65 +120,12 @@ public class TreatMode : MonoBehaviour
         }
     }
 
-    //private void TargetOverlap()
-    //{
-    //    bool hitAnyTarget = false;
-
-    //    foreach (Transform child in target.transform)
-    //    {
-
-    //        VimDose vimSub = child.GetComponent<VimDose>();
-    //        if (vimSub == null || vimSub.IsMaxed())
-    //            continue;
-
-    //        float targetRadius = vimSub.sr.bounds.extents.magnitude;
-    //        float distance = Vector2.Distance(worldClick, child.position);
-
-    //        if (distance <= targetRadius + hotspotRadius)
-    //        {
-    //            hitAnyTarget = true;
-
-    //            vimSub.AccumulateDose();
-    //            dosesDelivered++;
-    //            proportionTreated = (float)dosesDelivered / (3 * (float)totalSubNuclei);
-    //            treatModeController.UpdateProgress(proportionTreated, dosesDelivered);
-
-    //            if (vimSub.IsMaxed())
-    //            {
-    //                treatedSubNuclei++;
-    //            }
-    //        }
-    //    }
-
-    //    if (hitAnyTarget)
-    //    {
-    //        Debug.Log("On target");
-    //        treatModeController.OnTargetTaps();
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("Off target");
-    //        treatModeController.OffTargetTaps();
-    //    }
-
-
-
-    //    if (treatedSubNuclei == totalSubNuclei)
-    //    {
-    //        treatmentComplete = true;
-    //        treatModeController.StopCountdown();
-    //        StartCoroutine(TreatModeSuccess());
-    //    }
-
-    //}
-
     private IEnumerator TreatModeSuccess()
     {
         Debug.Log("In treatMode success");
         EnableTreatCollider(false);
 
         yield return new WaitForSeconds(1.0f);
-        treatModeController.HideOverlays();
 
         yield return StartCoroutine(TreatCompleteSequence());
 
@@ -202,34 +149,24 @@ public class TreatMode : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        SpriteRenderer vimSR = target.GetComponent<SpriteRenderer>();
-        vimSR.enabled = true;
-        yield return StartCoroutine(PulseGlow(vimSR.material, 0.3f, 1f, 1f));
+        List<Coroutine> pulses = new List<Coroutine>();
+
+        foreach (Transform hemi in target.transform)      // direct children of VIM_LR
+        {
+            SpriteRenderer hemiSR = hemi.GetComponent<SpriteRenderer>();
+            if (hemiSR == null) continue;                 // skip if no SR on this child
+
+            hemiSR.enabled = true;                        // make sure it’s visible
+            pulses.Add(StartCoroutine(PulseGlow(hemiSR.material,
+                                                from: 0.3f,
+                                                to: 1f,
+                                                dur: 1f)));
+        }
+
+        // wait until both PulseGlow coroutines finish
+        foreach (Coroutine c in pulses)
+            yield return c;
     }
-
-
-    //private IEnumerator TreatCompleteSequence()
-    //{
-    //    foreach (Transform child in target.transform)
-    //    {
-
-    //        SpriteRenderer sr = child.GetComponent<SpriteRenderer>();
-
-    //        sr.material = new Material(treatCompleteMaterial);
-    //        float dapple = Random.Range(0.1f, 0.4f);
-
-    //        yield return new WaitForSeconds(dapple); // delay between each
-    //    }
-
-    //    yield return new WaitForSeconds(0.3f);
-
-    //    SpriteRenderer vimSR = target.GetComponent<SpriteRenderer>();
-    //    vimSR.enabled = true;
-    //    Material mat = vimSR.material;
-    //    yield return StartCoroutine(PulseGlow(mat, 0.3f, 1f, 1f));
-
-    //}
-
 
     private IEnumerator PulseGlow(Material mat, float from, float to, float dur)
     {
